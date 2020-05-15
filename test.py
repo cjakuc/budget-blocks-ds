@@ -1,11 +1,14 @@
 from cats import cats_dict
 
+# print(cats_dict['Community'])
 
-total = 0
+housing = []
+for i in list(cats_dict.keys()):
+    for v in cats_dict[i]:
+        if "Housing" in v or "Rent" in v:
+            housing.append([i,v])
 
-for i in cats_dict.keys():
-    total = total + len(cats_dict[i])
-
-print(total)
+print(housing)
 
 
+# ["Housing", "Rent", 'Water','House','Mortage']
