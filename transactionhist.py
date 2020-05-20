@@ -1,33 +1,5 @@
 from pydantic import BaseModel
-from cats import cats_dict
 
-# For reference
-# plaid_cats = ["Bank Fees",
-#               "Cash Advance",
-#               "Community",
-#               "Food and Drink".
-#               "Healthcare",
-#               "Interest",
-#               "Payment",
-#               "Recreation",
-#               "Service",
-#               "Shops",
-#               "Tax",
-#               "Transfer",
-#               "Travel"]
-
-
-# to-do lists that holds specific sub-categorys
-cats_housing_main = []
-cats_housing_sub = []
-cats_food_main = []
-cats_food_sub = []
-cats_income_main = []
-cats_income_sub = []
-cats_personal_main = []
-cats_personal_sub = []
-cats_transportation_main = []
-cats_transportation_sub = []
 
 def reCatHelper(trans: dict, newCat: str):
     """
@@ -46,67 +18,55 @@ def reCatHelper(trans: dict, newCat: str):
 class TransactionHistory(BaseModel):
     transactions: list = None
     
-    # default vars soon to be overwritten
-    # totals: dict = {"Income": 0.0,"Housing":0.0, "Food": 0.0, "Personal": 0.0, "Transportation": 0.0}
 
-
-    def getCats(self):
+    def getCats(self, cats_dict: dict):
         """
         Helper function to go through the transactions and categorize them
-        Paramters: a TransactionHistory object
+        Paramters: a TransactionHistory object,
+                   a dictionary whose keys are the budget blocks categories and the values are its corresponding Plaid categories
         Returns: a JSON object of all the transactions with the budget blocks categorizations
         """
         
         # Index into each transaction dict
         for trans in self.transactions:
             
-            numb_of_cats = []
             # Need to be sure that category is the first key in the dictionary in the list trans['transactions]
             cat_list = trans['transactions'][0]['category']
             
             numb_of_cats = len(cat_list)
             
             print(cat_list)
+            
+            # Cash Advance is the only Plaid main category with no sub categories, and they all are remapped to "Income"
+            if (numb_of_cats == 1) & (cat_list == ["Cash Advance"]):
+                trans = reCatHelper(trans, "Income")
+            elif (numb_of_cats == 1) & (cat_list != ["Cash Advance"]):
+                raise Exception(f"There was only a single category, {cat_list}, and it was not Cash Advance")
 
-            if (numb_of_cats == 1):
-                 # Index into the transaction categories and save them to variables
-                plaid_cat1 = cat_list[0]
-                if (plaid_cat1 in cats_income_main):
-                    trans = reCatHelper(trans, "Income")
-               
-                if (plaid_cat1 in cats_housing_main):
-                    trans = reCatHelper(trans, "Housing")
-                    
-                if (plaid_cat1 in cats_food_main):
-                    trans = reCatHelper(trans, "Food")
-                    
-                if (plaid_cat1 in cats_personal_main):
-                    trans = reCatHelper(trans, "Personal")
-                    
-                if (plaid_cat1 in cats_transportation_main):
-                    trans = reCatHelper(trans, "Transportation")
 
-            if (numb_of_cats >= 2):
-                # Dict could contain no sub-categories and may also contain index [2]
-                    # Would a try statement work here?
-                plaid_cat2 = cat_list[1]
+            elif (numb_of_cats >= 2):
+                # Making it so cat_list doesn't include the first index (main category from Plaid)
+                cat_list_sliced = cat_list[1:]
+                dupl_test = 0
+                # Iterate through the lists in the dict, check if cat_list is in each list, and use reCatHelper to change the category
+                for key in list(cats_dict.keys()):
+                    for i in cats_dict[key]:
+                        if cat_list_sliced == i:
+                            dupl_test += 1
+                            # Custom exception to report if a cat_list is in 2 or more cat_dicts lists
+                            if dupl_test >= 2:
+                                raise Exception(f"A cat_list, {cat_list_sliced}, is in two or more cat_dicts lists, {trans['transactions'][0]['category'][0]} and {key}")
 
-                # Need to figure out the edge case where there is only one sub-category and not two
-                # Find the correct block to put the transaction in according to predetermined org
-                if (plaid_cat2 in cats_income_sub):
-                    trans = reCatHelper(trans, "Income")
-                
-                if (plaid_cat2 in cats_housing_sub):
-                    trans = reCatHelper(trans, "Housing")
-                    
-                if (plaid_cat2 in cats_food_sub):
-                    trans = reCatHelper(trans, "Food")
-                    
-                if (plaid_cat2 in cats_personal_sub):
-                    trans = reCatHelper(trans, "Personal")
-                    
-                if (plaid_cat2 in cats_transportation_sub):
-                     trans = reCatHelper(trans, "Transportation")
-                    
+                            trans = reCatHelper(trans, key)
 
+            # Custom error exception to tell us if there is a plaid category we didn't account for
+                # Transportation is the only case where Plaid cat == Budget Blocks cat
+            if (cat_list == trans['transactions'][0]['category']):
+                raise Exception(f"One of the categories from this list: {cat_list} is not accounted for")           
+                    
         return self.transactions
+
+# For the exceptions:
+    # Ask Ryan Herr about best practice
+        # Should we just print() our exceptions and return a JSON that says to contact DS
+        # Otherwise the web team will get an "Internal Server Error" and may not know to contact us

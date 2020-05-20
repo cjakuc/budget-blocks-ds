@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from transactionhist import *
+import pickle
+
+pkl_file = open('cats_new.pkl', 'rb')
+cats_dict = pickle.load(pkl_file)
+pkl_file.close()
 
 # to run the app vvv
 # uvicorn main:app --reload
@@ -19,4 +24,4 @@ def root():
 
 @app.post("/transaction/")
 def transaction(trans: TransactionHistory):
-    return trans.getCats()
+    return trans.getCats(cats_dict=cats_dict)
