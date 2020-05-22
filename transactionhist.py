@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from fastapi import HTTPException
+import time
 
 
 def reCatHelper(trans: dict, newCat: str):
@@ -8,16 +10,20 @@ def reCatHelper(trans: dict, newCat: str):
     Returns: the edited JSON object of a transaction
     """
 
-    del trans['transactions'][0]['category']
+    del trans['category']
 
-    trans['transactions'][0]['category'] = []
-    trans['transactions'][0]['category'].append(newCat)
+    trans['category'] = []
+    trans['category'].append(newCat)
 
     return trans
 
 class TransactionHistory(BaseModel):
-    transactions: list = None
-    
+    full_dict:  dict = None
+
+    # def __init__ (self, full_dict):
+    #     self.full_dict = full_dict
+    #     self.transactions = self.full_dict['transactions']
+        
 
     def getCats(self, cats_dict: dict):
         """
@@ -26,12 +32,12 @@ class TransactionHistory(BaseModel):
                    a dictionary whose keys are the budget blocks categories and the values are its corresponding Plaid categories
         Returns: a JSON object of all the transactions with the budget blocks categorizations
         """
-        
+        transactions = self.full_dict['transactions']
         # Index into each transaction dict
-        for trans in self.transactions:
+        for trans in transactions:
             
             # Need to be sure that category is the first key in the dictionary in the list trans['transactions]
-            cat_list = trans['transactions'][0]['category']
+            cat_list = trans['category']
             
             numb_of_cats = len(cat_list)
             
@@ -41,7 +47,7 @@ class TransactionHistory(BaseModel):
             if (numb_of_cats == 1) & (cat_list == ["Cash Advance"]):
                 trans = reCatHelper(trans, "Income")
             elif (numb_of_cats == 1) & (cat_list != ["Cash Advance"]):
-                raise Exception(f"There was only a single category, {cat_list}, and it was not Cash Advance")
+                raise HTTPException(status_code=500, detail=f"Contact the DS team: There was only a single category, {cat_list}, and it was not Cash Advance")
 
 
             elif (numb_of_cats >= 2):
@@ -55,16 +61,16 @@ class TransactionHistory(BaseModel):
                             dupl_test += 1
                             # Custom exception to report if a cat_list is in 2 or more cat_dicts lists
                             if dupl_test >= 2:
-                                raise Exception(f"A cat_list, {cat_list_sliced}, is in two or more cat_dicts lists, {trans['transactions'][0]['category'][0]} and {key}")
+                                raise HTTPException(status_code=500, detail=f"Contact the DS team: A cat_list, {cat_list_sliced}, is in two or more cat_dicts lists, {trans['transactions'][0]['category'][0]} and {key}")
 
                             trans = reCatHelper(trans, key)
 
             # Custom error exception to tell us if there is a plaid category we didn't account for
                 # Transportation is the only case where Plaid cat == Budget Blocks cat
-            if (cat_list == trans['transactions'][0]['category']):
-                raise Exception(f"One of the categories from this list: {cat_list} is not accounted for")           
-                    
-        return self.transactions
+            if (cat_list == trans['category']):
+                raise HTTPException(status_code=500, detail=f"Contact the DS team: One of the categories from this list: {cat_list} is not accounted for")  
+                     
+        return transactions
 
 # For the exceptions:
     # Ask Ryan Herr about best practice
