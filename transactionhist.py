@@ -10,9 +10,10 @@ def reCatHelper(trans: dict, newCat: str):
     Returns: the edited JSON object of a transaction
     """
 
-    del trans['category']
+    # [:] Means everything in the list
+    del trans['category'][:]
 
-    trans['category'] = []
+    # trans['category'] = []
     trans['category'].append(newCat)
 
     return trans
@@ -36,8 +37,8 @@ class TransactionHistory(BaseModel):
         # Index into each transaction dict
         for trans in transactions:
             
-            # Need to be sure that category is the first key in the dictionary in the list trans['transactions]
-            cat_list = trans['category']
+            # Need to create a copy so that it keeps the original value and doesn't get updated by getCats
+            cat_list = trans['category'].copy()
             
             numb_of_cats = len(cat_list)
             
@@ -71,8 +72,11 @@ class TransactionHistory(BaseModel):
                 # Transportation is the only case where Plaid cat == Budget Blocks cat
             if (cat_list == trans['category']):
                 raise HTTPException(status_code=500, detail=f"Contact the DS team: One of the categories from this list: {cat_list} is not accounted for")  
-                     
-        return transactions
+
+        # Putting the transactions back into the dict so match what was plugged in
+        temp_dict = {"transactions": transactions}
+
+        return temp_dict
 
 # For the exceptions:
     # Ask Ryan Herr about best practice
