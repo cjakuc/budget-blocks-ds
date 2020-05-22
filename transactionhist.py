@@ -46,7 +46,9 @@ class TransactionHistory(BaseModel):
             # Cash Advance is the only Plaid main category with no sub categories, and they all are remapped to "Income"
             if (numb_of_cats == 1) & (cat_list == ["Cash Advance"]):
                 trans = reCatHelper(trans, "Income")
-            elif (numb_of_cats == 1) & (cat_list != ["Cash Advance"]):
+            elif (numb_of_cats == 1) & (cat_list == ["Payment"]):
+                trans = reCatHelper(trans, "Debt")
+            elif (numb_of_cats == 1) & (cat_list != ["Cash Advance"] or cat_list != ['Payment']):
                 raise HTTPException(status_code=500, detail=f"Contact the DS team: There was only a single category, {cat_list}, and it was not Cash Advance")
 
 
