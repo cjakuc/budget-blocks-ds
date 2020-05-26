@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from transactionhist import *
 import pickle
 import time
+from masterDB import *
 
 pkl_file = open('cats_new.pkl', 'rb')
 cats_dict = pickle.load(pkl_file)
@@ -34,6 +35,11 @@ def root():
 def transaction(full_dict: dict):
     start_time = time.time()
     trans = TransactionHistory(full_dict=full_dict)
-    request = trans.getCats(cats_dict=cats_dict)
+    request = trans.getCats(cats_dict=masterPull())
     print("--- %s seconds ---" % (time.time() - start_time))
     return request
+
+@app.get("/create_master/")
+def create_master():
+    createMaster()
+    return{"message": "Master DB has been created"}
