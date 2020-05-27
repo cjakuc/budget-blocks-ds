@@ -21,11 +21,6 @@ def reCatHelper(trans: dict, newCat: str):
 class TransactionHistory(BaseModel):
     full_dict:  dict = None
 
-    # def __init__ (self, full_dict):
-    #     self.full_dict = full_dict
-    #     self.transactions = self.full_dict['transactions']
-        
-
     def getCats(self, cats_dict: dict):
         """
         Helper function to go through the transactions and categorize them
@@ -77,8 +72,3 @@ class TransactionHistory(BaseModel):
         temp_dict = {"transactions": transactions}
 
         return temp_dict
-
-# For the exceptions:
-    # Ask Ryan Herr about best practice
-        # Should we just print() our exceptions and return a JSON that says to contact DS
-        # Otherwise the web team will get an "Internal Server Error" and may not know to contact us
