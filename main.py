@@ -41,13 +41,26 @@ def create_master():
     return{"message": "Master DB has been created"}
 
 @app.get("/admin")
-async def testing(request: Request, Cat: str = 'None'):
-    cats = masterPull()
-    keys = list(cats.keys())
-    values = []
-    for key in keys:
-        values.append(cats[key])
-    return templates.TemplateResponse("admin.html", {'request': request, 'cats': keys, 'values': values, 'Cat': Cat, 'Dict': cats})
+async def testing(request: Request,
+                  Cat: str = 'None',
+                  Plaid_cat: str = 'None',
+                  Destination: str = 'None'):
+
+    # If Value and Destination have values, update the database
+    if (Plaid_cat != 'None') & (Destination != 'None'):
+        
+        return {"Cat": Cat,"Plaid Cat": Plaid_cat, "message": Destination}
+
+    Dict = masterPull()
+    cats = list(Dict.keys())
+
+    return templates.TemplateResponse("admin.html",
+                                     {'request': request,
+                                      'cats': cats,
+                                      'Cat': Cat,
+                                      'Dict': Dict,
+                                      'Plaid_cat': Plaid_cat,
+                                      'Destination': Destination})
 
 
 @app.get("/test")
