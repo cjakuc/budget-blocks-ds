@@ -6,11 +6,11 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+uvicorn = "*"
 fastapi = "*"
 gunicorn = "*"
-awsebcli = "*"
-uvicorn = "*"
 python-dotenv = "*"
+awsebcli = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.7"
