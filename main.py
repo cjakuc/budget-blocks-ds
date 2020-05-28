@@ -10,6 +10,8 @@ import copy
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 import secrets
 from dotenv import load_dotenv
+import os
+from os.path import join, dirname
 
 pkl_file = open('cats_new.pkl', 'rb')
 cats_dict = pickle.load(pkl_file)
@@ -22,6 +24,29 @@ pkl_file.close()
 # Instansiate FastAPI Class
 # when running the model, "main" is the python file and "app"
 # is the variable name that is holding the FastAPI class (main:app)
+
+
+# Load the file from the path
+load_dotenv()
+
+AUSERNAME = os.getenv("AUSERNAME", default="OOPS")
+PASSWORD = os.getenv("PASSWORD", default="OOPS")
+
+
+security = HTTPBasic()  
+
+
+def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
+    correct_username = secrets.compare_digest(credentials.username, AUSERNAME)
+    correct_password = secrets.compare_digest(credentials.password, PASSWORD)
+    if not (correct_username and correct_password):
+        raise HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Incorrect username or password",
+    headers={"WWW-Authenticate": "Basic"},
+    )
+    return credentials.username
+
 
 def DictHTML(Dict: dict):
     """
@@ -79,7 +104,6 @@ def DictHTML(Dict: dict):
 
 app = FastAPI()
 
-security = HTTPBasic()
 
 templates = Jinja2Templates(directory="templates")
 
@@ -97,17 +121,18 @@ def transaction(full_dict: dict):
     print("--- %s seconds ---" % (time.time() - start_time))
     return request
 
-@app.get("/create_master/")
-def create_master():
-    createMaster()
-    return{"message": "Master DB has been created"}
+@app.get("/admin/reset_master/")
+def reset_master(username: str = Depends(get_current_username)):
+    resetMaster()
+    return{"message": "Master DB has been reset"}
 
 # Admin route to edit the master DB table through an interface
-@app.get("/admin")
+@app.get("/admin/edit_master")
 async def testing(request: Request,
                   Cat: str = 'None',
                   Plaid_cat: str = 'None',
-                  Destination: str = 'None'):
+                  Destination: str = 'None',
+                  username: str = Depends(get_current_username)):
 
     # If Value and Destination have values, update the database
     if (Plaid_cat != 'None') & (Destination != 'None'):
@@ -143,7 +168,8 @@ async def testing(request: Request,
 
 # Route that allows us to check the current values of the SQLite master table
 @app.get("/admin/db")
-async def db(request: Request):
+async def db(request: Request,
+             username: str = Depends(get_current_username)):
     master = masterPull()
     keys = list(master.keys())
     values = []

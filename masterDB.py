@@ -7,9 +7,10 @@ pkl_file = open('cats_new.pkl', 'rb')
 cats_dict = pickle.load(pkl_file)
 pkl_file.close()
 
-def createMaster():
+def resetMaster():
     """
-    Function to create master table to store default categorization preferences
+    Function to create master tables to store default categorization preferences
+            Creates an "old" and a "new" table that are identical except for the value of is_old
     Inputs: None
     Output: None
     """
@@ -19,9 +20,14 @@ def createMaster():
     # Create the Cursor object
     c = conn.cursor()
 
-    # Create table if it doesn't exist
+    # Delte the table if it exists
     c.execute("""
-    CREATE TABLE IF NOT EXISTS master
+    DROP TABLE IF EXISTS master
+    """)
+
+    # Create table
+    c.execute("""
+    CREATE TABLE master
     (Key TEXT,
     PLAID_Values TEXT,
     is_old BOOLEAN)
@@ -32,33 +38,32 @@ def createMaster():
     SELECT count(*)
     FROM master
     """
-    empty_check = c.execute(empty_query).fetchall()
-    if empty_check == [(0,)]:
-        for key in list(cats_dict.keys()):
-            test = str(cats_dict[key])
-            test = test.replace('], [', '/')
-            test = test.replace('[[','')
-            test = test.replace(']]','')
-            test = test.replace("'","")
-            insertion_query = f"""
-            INSERT INTO master (Key, PLAID_Values, is_old)
-            VALUES
-            {tuple((key, test, True))}
-            """
-            c.execute(insertion_query)
-            
-        for key in list(cats_dict.keys()):
-            test = str(cats_dict[key])
-            test = test.replace('], [', '/')
-            test = test.replace('[[','')
-            test = test.replace(']]','')
-            test = test.replace("'","")
-            insertion_query = f"""
-            INSERT INTO master (Key, PLAID_Values, is_old)
-            VALUES
-            {tuple((key, test, False))}
-            """
-            c.execute(insertion_query)
+
+    for key in list(cats_dict.keys()):
+        test = str(cats_dict[key])
+        test = test.replace('], [', '/')
+        test = test.replace('[[','')
+        test = test.replace(']]','')
+        test = test.replace("'","")
+        insertion_query = f"""
+        INSERT INTO master (Key, PLAID_Values, is_old)
+        VALUES
+        {tuple((key, test, True))}
+        """
+        c.execute(insertion_query)
+        
+    for key in list(cats_dict.keys()):
+        test = str(cats_dict[key])
+        test = test.replace('], [', '/')
+        test = test.replace('[[','')
+        test = test.replace(']]','')
+        test = test.replace("'","")
+        insertion_query = f"""
+        INSERT INTO master (Key, PLAID_Values, is_old)
+        VALUES
+        {tuple((key, test, False))}
+        """
+        c.execute(insertion_query)
 
     # commit changes (if any)
     conn.commit()
