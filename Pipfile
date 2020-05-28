@@ -11,6 +11,7 @@ fastapi = "*"
 gunicorn = "*"
 python-dotenv = "*"
 awsebcli = "*"
+jinja2 = "*"
 
 [requires]
 python_version = "3.7"

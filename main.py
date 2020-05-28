@@ -32,6 +32,11 @@ pkl_file.close()
 # AUSERNAME = os.getenv("AUSERNAME", default="OOPS")
 # PASSWORD = os.getenv("PASSWORD", default="OOPS")
 
+app = FastAPI()
+
+
+templates = Jinja2Templates(directory="templates")
+
 
 security = HTTPBasic()  
 
@@ -101,11 +106,6 @@ def DictHTML(Dict: dict):
                 Dict[key][w] = change.replace(' ', '_')
 
     return Dict, master
-
-app = FastAPI()
-
-
-templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
 def root():
