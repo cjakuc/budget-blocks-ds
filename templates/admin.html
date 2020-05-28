@@ -8,20 +8,34 @@
     <h1>This is a test</h1>
     <form action="/admin">
         <label for="Budget Blocks Category">Budget Blocks Category:</label>
-        <select id="Cat" name="Cat">
+        {% if Cat == 'None' %}
+            <select id="Cat" name="Cat">
             {% for cat in cats %}
                 <option value={{cat}}>{{cat}}</option>
             {% endfor %}
-        </select>
-            {% if Cat != 'None' %}
+            </select>
+        {% endif %}
+        {% if Cat != 'None' %}
+            <select id="Cat" name="Cat">
+                <option value={{Cat}}>{{Cat}}</option>
+            </select>
+        {% endif %}
+        {% if Cat != 'None' %}
         <label for="Plaid Category"> Plaid Category:</label>
-        <select id="Plaid_cat" name="Plaid_cat">
-                {% for value in Dict[Cat] %}
-                    <option value={{value}}>{{value}}</option>
+        {% if Plaid_cat == 'None' %}
+            <select id="Plaid_cat" name="Plaid_cat">
+                {%for v, v2 in Value_list %}
+                    <option value={{v}}>{{v2}}</option>
                 {% endfor %}
-            {% endif %}
-        </select>
-            {% if Plaid_cat != 'None' %}
+            </select>
+        {% endif %}
+        {% if Plaid_cat != "None" %}
+            <select id="Plaid_cat" name="Plaid_cat">
+                <option value={{Plaid_cat}}>{{Plaid_cat}}</option>
+            </select>
+        {% endif %}
+        {% endif %}
+        {% if Plaid_cat != 'None' %}
         <label for="Destination Category"> Destination Category:</label>
         <select id="Destination" name="Destination">
                 {% for cat in cats %}
