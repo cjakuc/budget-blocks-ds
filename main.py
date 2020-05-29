@@ -59,7 +59,7 @@ def DictHTML(Dict: dict):
             (Spaces were breaking it because spaces can't be in a URL)
     Inputs: a dictionary
     Outputs: the same dictionary with the items of a list joined using "_AND_" and the spaces replaced with "_" (Dict)
-           : a copy of the same dictionary with the items of a list joined using " AND " (master)
+           : a copy of the same dictionary with the items of a list joined using " AND " (master) for displaying
     """
     # VERY IMPORTANT: regularly copying a dict doesn't create a new object, it creates a new reference to the original object, so we had to do this
     master = copy.deepcopy(Dict)

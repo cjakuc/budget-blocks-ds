@@ -48,7 +48,7 @@ def resetMaster():
         insertion_query = f"""
         INSERT INTO master (Key, PLAID_Values, is_old)
         VALUES
-        {tuple((key, test, True))}
+        {tuple((key, test, 1))}
         """
         c.execute(insertion_query)
         
@@ -61,7 +61,7 @@ def resetMaster():
         insertion_query = f"""
         INSERT INTO master (Key, PLAID_Values, is_old)
         VALUES
-        {tuple((key, test, False))}
+        {tuple((key, test, 0))}
         """
         c.execute(insertion_query)
 
@@ -189,7 +189,7 @@ def updateMaster(old_cat, plaid_cat, destination):
         insertion_query = f"""
         INSERT INTO master (Key, PLAID_Values, is_old)
         VALUES
-        {tuple((key, test, False))}
+        {tuple((key, test, 0))}
         """
         c.execute(insertion_query)
 
