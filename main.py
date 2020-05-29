@@ -9,7 +9,7 @@ from fastapi.templating import Jinja2Templates
 import copy
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 import secrets
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 import os
 from os.path import join, dirname
 
@@ -27,10 +27,10 @@ pkl_file.close()
 
 
 # Load the file from the path
-# load_dotenv()
+load_dotenv()
 
-# AUSERNAME = os.getenv("AUSERNAME", default="OOPS")
-# PASSWORD = os.getenv("PASSWORD", default="OOPS")
+AUSERNAME = os.getenv("AUSERNAME", default="OOPS")
+PASSWORD = os.getenv("PASSWORD", default="OOPS")
 
 app = FastAPI()
 
@@ -42,8 +42,8 @@ security = HTTPBasic()
 
 
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_username = secrets.compare_digest(credentials.username, "test")
-    correct_password = secrets.compare_digest(credentials.password, "abc123")
+    correct_username = secrets.compare_digest(credentials.username, AUSERNAME)
+    correct_password = secrets.compare_digest(credentials.password, PASSWORD)
     if not (correct_username and correct_password):
         raise HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
