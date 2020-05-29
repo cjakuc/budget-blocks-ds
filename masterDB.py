@@ -93,7 +93,7 @@ def masterPull():
     query = f"""
     SELECT Key
     from master
-    WHERE is_old is FALSE
+    WHERE is_old is 0
     """
     val = c.execute(query).fetchall()
     # Iterate through each key and append it to keys
@@ -104,7 +104,7 @@ def masterPull():
     query2 = f"""
     SELECT PLAID_Values
     from master
-    WHERE is_old is FALSE
+    WHERE is_old is 0
     """
     vals = c.execute(query2).fetchall()
     # Iterate through the string values and do some splitting to turn them into the correct list of lists format
@@ -168,14 +168,14 @@ def updateMaster(old_cat, plaid_cat, destination):
     delete_query = """
     DELETE
     FROM master
-    WHERE is_old is TRUE
+    WHERE is_old is 1
     """
     c.execute(delete_query)
 
     # Make the current new, old
     replace_query = """
     Update master
-    Set is_old = replace(is_old, FALSE, TRUE) 
+    Set is_old = replace(is_old, 0, 1) 
     """
     c.execute(replace_query)
 
