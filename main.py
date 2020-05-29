@@ -172,14 +172,11 @@ async def db(request: Request,
              username: str = Depends(get_current_username)):
     master = masterPull()
     keys = list(master.keys())
-    values = []
-    for key in keys:
-        values.append(master[key])
 
     return templates.TemplateResponse("db.html",
                                      {'request': request,
                                       'keys': keys,
-                                      'values': values})
+                                      'values': master})
 
 
 
