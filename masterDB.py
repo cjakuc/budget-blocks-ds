@@ -9,7 +9,7 @@ pkl_file.close()
 
 def resetMaster():
     """
-    Function to create master tables to store default categorization preferences
+    Function to create master table to store default categorization preferences
             Creates an "old" and a "new" table that are identical except for the value of is_old
     Inputs: None
     Output: None
@@ -69,6 +69,8 @@ def resetMaster():
     conn.commit()
     # close connection
     conn.close()
+    from userDB import updateUsers
+    updateUsers(cats_dict)
 
     return 0
 
@@ -193,9 +195,13 @@ def updateMaster(old_cat, plaid_cat, destination):
         """
         c.execute(insertion_query)
 
+    
     # commit changes (if any)
     conn.commit()
     # close connection
     conn.close()
 
+    from userDB import updateUsers
+    updateUsers(new_dict)
+    
     return 0

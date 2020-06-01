@@ -9,12 +9,13 @@ def reCatHelper(trans: dict, newCat: str):
     Parameters: a JSON object for a single transaction and the desired new budget blocks category
     Returns: the edited JSON object of a transaction
     """
-
+    temp = trans['category'].copy()
+    trans['plaid_category'] = temp
     # [:] Means everything in the list
-    del trans['category'][:]
+    del trans['category']
 
-    # trans['category'] = []
-    trans['category'].append(newCat)
+    trans['budget_blocks_category'] = []
+    trans['budget_blocks_category'].append(newCat)
 
     return trans
 
@@ -65,10 +66,11 @@ class TransactionHistory(BaseModel):
 
             # Custom error exception to tell us if there is a plaid category we didn't account for
                 # Transportation is the only case where Plaid cat == Budget Blocks cat
-            if (cat_list == trans['category']):
+            if ('category' in trans):
                 raise HTTPException(status_code=500, detail=f"Contact the DS team: One of the categories from this list: {cat_list} is not accounted for")  
 
         # Putting the transactions back into the dict so match what was plugged in
-        temp_dict = {"transactions": transactions}
+        temp_dict = {"transactions": transactions,
+                    "user_id": self.full_dict['user_id']}
 
         return temp_dict

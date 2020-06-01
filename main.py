@@ -6,12 +6,13 @@ import time
 from masterDB import *
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-import copy
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 import secrets
 from dotenv import load_dotenv
 import os
 from os.path import join, dirname
+from mainhelp import *
+from userDB import *
 
 pkl_file = open('cats_new.pkl', 'rb')
 cats_dict = pickle.load(pkl_file)
@@ -42,8 +43,8 @@ security = HTTPBasic()
 
 
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_username = secrets.compare_digest(credentials.username, AUSERNAME)
-    correct_password = secrets.compare_digest(credentials.password, PASSWORD)
+    correct_username = secrets.compare_digest(credentials.username, "test")
+    correct_password = secrets.compare_digest(credentials.password, "test")
     if not (correct_username and correct_password):
         raise HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -51,61 +52,6 @@ def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
     headers={"WWW-Authenticate": "Basic"},
     )
     return credentials.username
-
-
-def DictHTML(Dict: dict):
-    """
-    Function that formats the values of our master dict so they can be manipulatedly more easily in the HTML files
-            (Spaces were breaking it because spaces can't be in a URL)
-    Inputs: a dictionary
-    Outputs: the same dictionary with the items of a list joined using "_AND_" and the spaces replaced with "_" (Dict)
-           : a copy of the same dictionary with the items of a list joined using " AND " (master) for displaying
-    """
-    # VERY IMPORTANT: regularly copying a dict doesn't create a new object, it creates a new reference to the original object, so we had to do this
-    master = copy.deepcopy(Dict)
-
-    # iterate through keys
-    for key in list(Dict.keys()):
-        # iterate through words from a specified key
-        for w,i in enumerate(Dict[key]):
-            # If the list only contains one word
-            if len(i) == 1:
-                # Pull the word out of the list
-                for v in i:
-                    # set that word to a variable
-                    x = v
-                    # The index of that list is now a string of the word that was inside the list
-                    Dict[key][w] = x
-                    master[key][w] = x
-            # If the list contains two words
-            elif len(i) == 2:
-                # Pull the words out of the list
-                for num, v in enumerate(i):
-                    # Checks if its the first iteration
-                    if num == 0:
-                        # create x variable with the first word
-                        x = v
-                    # Checks if it is the second iteration
-                    if num == 1:
-                        # append the second word to the first word
-                        # and add the word AND inbetween each word
-                        y = x + " AND " + v
-                        x = x + "_AND_" + v
-                        Dict[key][w] = x
-                        master[key][w] = y
-    
-    # Iterate through each key
-    for key in list(Dict.keys()):
-        # Iterate through a list for the specified key
-        for w,i in enumerate(Dict[key]):
-            # Create a change variable that holds the current string
-            change = Dict[key][w]
-            # Checks if the word is a string
-            if type(change) == str:
-                # replace each space in the word with underscores
-                Dict[key][w] = change.replace(' ', '_')
-
-    return Dict, master
 
 @app.get("/")
 def root():
@@ -117,7 +63,8 @@ def root():
 def transaction(full_dict: dict):
     start_time = time.time()
     trans = TransactionHistory(full_dict=full_dict)
-    request = trans.getCats(cats_dict=masterPull())
+    user_id = full_dict['user_id']
+    request = trans.getCats(cats_dict=getUser(user_id))
     print("--- %s seconds ---" % (time.time() - start_time))
     return request
 
@@ -178,12 +125,13 @@ async def db(request: Request,
                                       'keys': keys,
                                       'values': master})
 
+# Route that allows us to reset/create the users table
+@app.get("/admin/reset_user")
+async def user(username: str = Depends(get_current_username)):
+    resetUserTable()
+    return {"message": "User DB has been reset"}
 
-
-
-
-
-
-# Check if we accidentaly didn't drop anything when messing with the dicts homie
-
-# Maybe move function to another py file
+@app.post("/update_users")
+async def update_users(expected: dict):
+    new = changePreferences(expected)
+    return({"message": new})
