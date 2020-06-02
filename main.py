@@ -65,9 +65,8 @@ def transaction(full_dict: dict):
     trans = TransactionHistory(full_dict=full_dict)
     user_id = full_dict['user_id']
     request = trans.getCats(cats_dict=getUser(user_id))
-    # print("--- %s seconds ---" % (time.time() - start_time))
-    final_time = time.time() - start_time
-    return final_time
+    print("--- %s seconds ---" % (time.time() - start_time))
+    return request
 
 @app.get("/admin/reset_master/")
 def reset_master(username: str = Depends(get_current_username)):
