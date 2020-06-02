@@ -1,6 +1,7 @@
 import sqlite3 as sql
 import pickle
 import copy
+from DBhelper import dict_to_sql, sql_to_dict
 # from main import cats_dict
 
 pkl_file = open('cats_new.pkl', 'rb')
@@ -20,7 +21,7 @@ def resetMaster():
     # Create the Cursor object
     c = conn.cursor()
 
-    # Delte the table if it exists
+    # Delete the table if it exists
     c.execute("""
     DROP TABLE IF EXISTS master
     """)
@@ -38,32 +39,14 @@ def resetMaster():
     SELECT count(*)
     FROM master
     """
+    
+    # "New" default entries in master table
+    dict_to_sql(current_dict = cats_dict, is_master = True, 
+                    is_old_custom = 1, c = c)
 
-    for key in list(cats_dict.keys()):
-        test = str(cats_dict[key])
-        test = test.replace('], [', '/')
-        test = test.replace('[[','')
-        test = test.replace(']]','')
-        test = test.replace("'","")
-        insertion_query = f"""
-        INSERT INTO master (Key, PLAID_Values, is_old)
-        VALUES
-        {tuple((key, test, 1))}
-        """
-        c.execute(insertion_query)
-        
-    for key in list(cats_dict.keys()):
-        test = str(cats_dict[key])
-        test = test.replace('], [', '/')
-        test = test.replace('[[','')
-        test = test.replace(']]','')
-        test = test.replace("'","")
-        insertion_query = f"""
-        INSERT INTO master (Key, PLAID_Values, is_old)
-        VALUES
-        {tuple((key, test, 0))}
-        """
-        c.execute(insertion_query)
+    # "Old" default entries in master table
+    dict_to_sql(current_dict = cats_dict, is_master = True, 
+                    is_old_custom = 0, c = c)
 
     # commit changes (if any)
     conn.commit()
@@ -87,20 +70,12 @@ def masterPull():
     # Create the Cursor object
     c = conn.cursor()
 
-    # Create lists to store the keys and lists of values that correspond to them
-    keys = []
-    values = []
-
     # Query the master table for the keys and save them to val
-    query = f"""
+    query1 = f"""
     SELECT Key
     from master
     WHERE is_old is 0
     """
-    val = c.execute(query).fetchall()
-    # Iterate through each key and append it to keys
-    for i in val:
-        keys.append(i[0])
 
     # Query the master table for the strings that contain the lists of values separated by '/'
     query2 = f"""
@@ -108,20 +83,7 @@ def masterPull():
     from master
     WHERE is_old is 0
     """
-    vals = c.execute(query2).fetchall()
-    # Iterate through the string values and do some splitting to turn them into the correct list of lists format
-    for i in vals:
-        words = i[0]
-        words =  words.split('/')
-        for i in range(len(words)):
-            words[i] = words[i].split(', ', 1)
-        
-        values.append(words)
-    
-    # Create a new dictionary and populate it with the keys and values we've extracted and formatted
-    new_dict = {}
-    for i, key in enumerate(keys):
-        new_dict[key] = values[i]
+    new_dict = sql_to_dict(query1 = query1, query2 = query2, c = c)
 
     # commit changes (if any)
     conn.commit()
@@ -181,19 +143,9 @@ def updateMaster(old_cat, plaid_cat, destination):
     """
     c.execute(replace_query)
 
-    # Insert the new, new
-    for key in list(new_dict.keys()):
-        test = str(new_dict[key])
-        test = test.replace('], [', '/')
-        test = test.replace('[[','')
-        test = test.replace(']]','')
-        test = test.replace("'","")
-        insertion_query = f"""
-        INSERT INTO master (Key, PLAID_Values, is_old)
-        VALUES
-        {tuple((key, test, 0))}
-        """
-        c.execute(insertion_query)
+    # Insert the newly made cats as the new dict
+    dict_to_sql(current_dict = new_dict, is_master = True, 
+                is_old_custom = 0, c = c)
 
     
     # commit changes (if any)

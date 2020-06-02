@@ -2,6 +2,8 @@ from masterDB import *
 import sqlite3 as sql
 import pickle
 import copy
+from DBhelper import sql_to_dict, dict_to_sql
+from fastapi import HTTPException
 
 def resetUserTable():
     """
@@ -58,19 +60,12 @@ def getUser(user_id):
 
     # if the user already exists in the DB, grab whats currently there
     if a_user != []:
-         # Create lists to store the keys and lists of values that correspond to them
-        keys = []
-        values = []
-         # Query the master table for the keys and save them to val
-        query = f"""
+        # Query the master table for the keys and save them to val
+        query1 = f"""
         SELECT Key
         from users
         WHERE user_id is {user_id}
         """
-        val = c.execute(query).fetchall()
-        # Iterate through each key and append it to keys
-        for i in val:
-            keys.append(i[0])
 
         # Query the master table for the strings that contain the lists of values separated by '/'
         query2 = f"""
@@ -78,20 +73,9 @@ def getUser(user_id):
         from users
         WHERE user_id is {user_id}
         """
-        vals = c.execute(query2).fetchall()
-        # Iterate through the string values and do some splitting to turn them into the correct list of lists format
-        for i in vals:
-            words = i[0]
-            words =  words.split('/')
-            for i in range(len(words)):
-                words[i] = words[i].split(', ', 1)
-            
-            values.append(words)
-        
-        # Create a new dictionary and populate it with the keys and values we've extracted and formatted
-        new_dict = {}
-        for i, key in enumerate(keys):
-            new_dict[key] = values[i]
+
+        new_dict = sql_to_dict(query1 = query1, query2 = query2, c = c)
+
 
         conn.close()
         
@@ -100,18 +84,8 @@ def getUser(user_id):
     # If the user doesn't exist in the DB, provide it the master dict
     else:
         current_dict = masterPull()
-        for key in list(current_dict.keys()):
-            test = str(current_dict[key])
-            test = test.replace('], [', '/')
-            test = test.replace('[[','')
-            test = test.replace(']]','')
-            test = test.replace("'","")
-            insertion_query = f"""
-            INSERT INTO users (user_id, Key, PLAID_Values, is_custom)
-            VALUES
-            {tuple((user_id, key, test, 0))}
-            """
-            c.execute(insertion_query)
+        dict_to_sql(current_dict = current_dict, is_master = False, 
+                    is_old_custom = 0, c = c, user_id = user_id) 
 
         conn.commit()
 
@@ -151,33 +125,30 @@ def updateUsers(new_dict: dict):
     c.execute(delete_query)
 
     for user in user_ids:
-        for key in list(new_dict.keys()):
-            test = str(new_dict[key])
-            test = test.replace('], [', '/')
-            test = test.replace('[[','')
-            test = test.replace(']]','')
-            test = test.replace("'","")
-            insertion_query = f"""
-            INSERT INTO users (user_id ,Key, PLAID_Values, is_custom)
-            VALUES
-            {tuple((user, key, test, 0))}
-            """
-            c.execute(insertion_query)
-    
+        dict_to_sql(current_dict = new_dict, is_master = False, 
+                    is_old_custom = 0, c = c, user_id = user)
+
     conn.commit()
     conn.close()
     
     return 0
 
 
-def changePreferences(expected: dict):
+def changePreferences(update: dict):
     """
-    
+    Function to update a user's ctaegorical preferences in the users table
+    Inputs: update - dictionary containing:
+                plaid_cats - the plaid_cats to be moved
+                old_BB - the Budget Blocks category where the plaid cats currently are
+                new_BB - the Budget Blocks category where the plaid cats will be moved to
+                user_id - the user ID
+    Outputs: None
     """
-    plaid_cats = expected['plaid_cats']
-    old_BB = expected['old_BB']
-    new_BB = expected['new_BB']
-    user_id = expected['user_id']
+    # If the user doesn't already exist then it breaks
+    plaid_cats = update['plaid_cats']
+    old_BB = update['old_BB']
+    new_BB = update['new_BB']
+    user_id = update['user_id']
 
     conn = sql.connect('BudgetBlocks.db')
 
@@ -185,44 +156,33 @@ def changePreferences(expected: dict):
     
     keys = []
     values = []
-    # Query the master table for the keys and save them to val
-    query = f"""
+    # Query the users table for the keys and save them to val
+    query1 = f"""
     SELECT Key
     from users
     WHERE user_id is {user_id}
     """
-    val = c.execute(query).fetchall()
-    # Iterate through each key and append it to keys
-    for i in val:
-        keys.append(i[0])
 
-    # Query the master table for the strings that contain the lists of values separated by '/'
+    # Query the users table for the strings that contain the lists of values separated by '/'
     query2 = f"""
     SELECT PLAID_Values
     from users
     WHERE user_id is {user_id}
     """
-    vals = c.execute(query2).fetchall()
-    # Iterate through the string values and do some splitting to turn them into the correct list of lists format
-    for i in vals:
-        words = i[0]
-        words =  words.split('/')
-        for i in range(len(words)):
-            words[i] = words[i].split(', ', 1)
+    
+    new_dict = sql_to_dict(query1 = query1, query2 = query2, c = c)
+
+    # Exception for if plaid_cats is not in old_BB
+    if plaid_cats not in new_dict[old_BB]:
+        raise HTTPException(status_code=500, detail=f"{plaid_cats} is not in {old_BB} for user {user_id}")
+    
+    else:
+        # Remove the plaid_cat from the old_cat's value list
+        new_dict[old_BB].remove(plaid_cats)
+
+        # Add the plaid_cat to the destination's value list
+        new_dict[new_BB].append(plaid_cats)
         
-        values.append(words)
-    
-    # Create a new dictionary and populate it with the keys and values we've extracted and formatted
-    new_dict = {}
-    for i, key in enumerate(keys):
-        new_dict[key] = values[i]
-
-    # Remove the plaid_cat from the old_cat's value list
-    new_dict[old_BB].remove(plaid_cats)
-
-    # Add the plaid_cat to the destination's value list
-    new_dict[new_BB].append(plaid_cats)
-    
     delete_query = f"""
     DELETE
     FROM users
@@ -231,19 +191,9 @@ def changePreferences(expected: dict):
 
     c.execute(delete_query)
 
-    # Insert the new
-    for key in list(new_dict.keys()):
-        test = str(new_dict[key])
-        test = test.replace('], [', '/')
-        test = test.replace('[[','')
-        test = test.replace(']]','')
-        test = test.replace("'","")
-        insertion_query = f"""
-        INSERT INTO users (user_id ,Key, PLAID_Values, is_custom)
-        VALUES
-        {tuple((user_id, key, test, 1))}
-        """
-        c.execute(insertion_query)
+   # Insert the new
+    dict_to_sql(current_dict = new_dict, is_master = False,
+                user_id = user_id, c = c, is_old_custom = 1)
 
     conn.commit()
     conn.close()

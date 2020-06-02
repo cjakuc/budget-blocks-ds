@@ -43,8 +43,8 @@ security = HTTPBasic()
 
 
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_username = secrets.compare_digest(credentials.username, AUSERNAME)
-    correct_password = secrets.compare_digest(credentials.password, PASSWORD)
+    correct_username = secrets.compare_digest(credentials.username, "test")
+    correct_password = secrets.compare_digest(credentials.password, "test")
     if not (correct_username and correct_password):
         raise HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -132,6 +132,8 @@ async def user(username: str = Depends(get_current_username)):
     return {"message": "User DB has been reset"}
 
 @app.post("/update_users")
-async def update_users(expected: dict):
-    new = changePreferences(expected)
-    return({"message": new})
+async def update_users(update: dict):
+    new = changePreferences(update)
+    if new == 0:
+        message = "Updated preferences successfully"
+    return({"message": message})
