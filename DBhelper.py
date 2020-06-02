@@ -10,7 +10,7 @@ def dict_to_sql(current_dict: dict, is_master: bool, is_old_custom: int, c, user
             is_old_custom - Integer (1 or 0) for whether the master dict is old or the users dict is custom
             c - cursor object to execute the query
             user_id - Integer user ID
-   Outputs: None
+    Outputs: None
     """
     # Raise exception if is_old_custom != 0 or 1
     if (is_old_custom != 0) & (is_old_custom != 1):

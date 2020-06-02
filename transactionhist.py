@@ -5,7 +5,7 @@ import time
 
 def reCatHelper(trans: dict, newCat: str):
     """
-    Helper function to delete all the Plaid categories and replace with a single budget blocks category
+    Helper function to retitle the Plaid categories from 'category' to 'plaid_category' and add a single budget blocks category, 'budget_blocks_category'
     Parameters: a JSON object for a single transaction and the desired new budget blocks category
     Returns: the edited JSON object of a transaction
     """
@@ -24,7 +24,7 @@ class TransactionHistory(BaseModel):
 
     def getCats(self, cats_dict: dict):
         """
-        Helper function to go through the transactions and categorize them
+        Function to go through the transactions and categorize them
         Paramters: a TransactionHistory object,
                    a dictionary whose keys are the budget blocks categories and the values are its corresponding Plaid categories
         Returns: a JSON object of all the transactions with the budget blocks categorizations
