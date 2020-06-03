@@ -43,8 +43,8 @@ security = HTTPBasic()
 
 
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_username = secrets.compare_digest(credentials.username, AUSERNAME)
-    correct_password = secrets.compare_digest(credentials.password, PASSWORD)
+    correct_username = secrets.compare_digest(credentials.username, "test")
+    correct_password = secrets.compare_digest(credentials.password, "test")
     if not (correct_username and correct_password):
         raise HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -68,10 +68,30 @@ def transaction(full_dict: dict):
     print("--- %s seconds ---" % (time.time() - start_time))
     return request
 
+@app.get("/admin")
+def admin_main(request: Request,
+               username: str = Depends(get_current_username)):
+    return templates.TemplateResponse("admin_main.html",
+                                     {'request': request})
+
+
+@app.get("/admin/reset_master_confirmation")
+def reset_master_confirmation(request: Request):
+    return templates.TemplateResponse("master_confirmation.html",
+                                     {'request': request})
+
+@app.get("/admin/reset_user_confirmation")
+def reset_user_confirmation(request: Request):
+    return templates.TemplateResponse("user_confirmation.html",
+                                     {'request': request})
+
 @app.get("/admin/reset_master/")
-def reset_master(username: str = Depends(get_current_username)):
+def reset_master(request: Request, username: str = Depends(get_current_username)):
     resetMaster()
-    return{"message": "Master DB has been reset"}
+    message = "The master table was reset"
+    return templates.TemplateResponse("reset_success.html",
+                                     {'request': request,
+                                      'message': message})
 
 # Admin route to edit the master DB table through an interface
 @app.get("/admin/edit_master")
@@ -85,8 +105,16 @@ async def testing(request: Request,
     if (Plaid_cat != 'None') & (Destination != 'None'):
         # Function that updates the master DB table
         updateMaster(old_cat = Cat, plaid_cat = Plaid_cat, destination = Destination)
-        return {"message": f"The master table was successfully updated. {Plaid_cat} was moved from {Cat} to {Destination}."}
 
+        # Update change log table
+        # updateChangeLog(plaid_cat = Plaid_cat, old_BB = Cat, new_BB = Destination)
+        
+        # Redirect to edit_success page which easily allows the admin to return to the main admin panel or go directly to the admin/db page
+        return templates.TemplateResponse("edit_success.html",
+                                         {'request': request,
+                                          'plaid_cat': Plaid_cat,
+                                          'cat': Cat,
+                                          'destination': Destination})
     # Pull the current default from the master DB table
     Dict = masterPull()
     
@@ -104,7 +132,7 @@ async def testing(request: Request,
     cats = list(html_dict.keys())
 
     # Return the admin.html template with the appropriate variables in the context parameter
-    return templates.TemplateResponse("admin.html",
+    return templates.TemplateResponse("admin_edit.html",
                                      {'request': request,
                                       'cats': cats,
                                       'Cat': Cat,
@@ -127,10 +155,13 @@ async def db(request: Request,
 
 # Route that allows us to reset/create the users table
 @app.get("/admin/reset_user")
-async def user(username: str = Depends(get_current_username)):
+async def user(request: Request,
+               username: str = Depends(get_current_username)):
     resetUserTable()
-    return {"message": "User DB has been reset"}
-
+    message = "The Users table was reset"
+    return templates.TemplateResponse("reset_success.html",
+                                     {'request': request,
+                                      'message': message})
 @app.post("/update_users")
 async def update_users(update: dict):
     new = changePreferences(update)

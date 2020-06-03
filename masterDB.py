@@ -26,6 +26,11 @@ def resetMaster():
     DROP TABLE IF EXISTS master
     """)
 
+    # Delete the changelogs table
+    # c.execute("""
+    # DROP TABLE IF EXISTS changelog
+    # """)
+
     # Create table
     c.execute("""
     CREATE TABLE master
@@ -115,6 +120,10 @@ def updateMaster(old_cat, plaid_cat, destination):
     old_dict = copy.deepcopy(masterPull())
     new_dict = copy.deepcopy(masterPull())
 
+    # Exception for if plaid_cats is not in old_BB
+    if plaid_cat not in new_dict[old_cat]:
+        raise HTTPException(status_code=500, detail=f"{plaid_cat} is not in {old_cat}")
+
     # Remove the plaid_cat from the old_cat's value list
     new_dict[old_cat].remove(plaid_cat)
 
@@ -157,3 +166,44 @@ def updateMaster(old_cat, plaid_cat, destination):
     updateUsers(new_dict)
     
     return 0
+
+
+# def updateChangeLog(plaid_cat, old_BB, new_BB):
+#     """
+#     Function to store any changes to the master 
+#     """
+#     # Create the Connection object to the 'BudgetBlocks' DB
+#     conn = sql.connect('BudgetBlocks.db')
+
+#     # Create the Cursor object
+#     c = conn.cursor()
+
+#     # Create table if it doesn't exist
+#     c.execute("""
+#     CREATE TABLE IF NOT EXISTS changelog
+#     (Changes TEXT)
+#     """)
+
+#     message = f"{plaid_cat} was moved from {old_BB} to {new_BB}"
+#     ok = 'ok'
+#     # message = str(message)
+#     # message = "message"
+#     # print(message[0])
+#     # insertion_query = f"""
+#     # INSERT INTO changelog (Changes)
+#     # VALUES
+#     # {tuple((message))}
+#     # """
+
+#     insertion_query = f"""
+#     INSERT INTO changelog (Changes)
+#     VALUES
+#     '{tuple((ok,))}'
+#     """
+#     c.execute(insertion_query)
+
+#     conn.commit()
+
+#     conn.close()
+
+#     return 0
