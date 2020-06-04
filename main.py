@@ -43,8 +43,8 @@ security = HTTPBasic()
 
 
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_username = secrets.compare_digest(credentials.username, AUSERNAME)
-    correct_password = secrets.compare_digest(credentials.password, PASSWORD)
+    correct_username = secrets.compare_digest(credentials.username, "test")
+    correct_password = secrets.compare_digest(credentials.password, "test")
     if not (correct_username and correct_password):
         raise HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -107,17 +107,22 @@ async def testing(request: Request,
         updateMaster(old_cat = Cat, plaid_cat = Plaid_cat, destination = Destination)
 
         # Update change log table
-        # updateChangeLog(plaid_cat = Plaid_cat, old_BB = Cat, new_BB = Destination)
+        updateChangeLog(plaid_cat = Plaid_cat, old_BB = Cat, new_BB = Destination)
+
+        changes = masterChanges()
+
         
         # Redirect to edit_success page which easily allows the admin to return to the main admin panel or go directly to the admin/db page
         return templates.TemplateResponse("edit_success.html",
                                          {'request': request,
                                           'plaid_cat': Plaid_cat,
                                           'cat': Cat,
-                                          'destination': Destination})
+                                          'destination': Destination,
+                                          'changes': changes})
     # Pull the current default from the master DB table
     Dict = masterPull()
     
+
     # Use the helper function DictHTML to have 2 dictionaries:
         # one for displaying readable Plaid categories to the user and one for using to change the DB later
     html_dict, spaces_dict = DictHTML(Dict)
@@ -168,3 +173,12 @@ async def update_users(update: dict):
     if new == 0:
         message = "Updated preferences successfully"
     return({"message": message})
+
+# Route to display all changes in the change log table
+@app.get("/admin/changelog")
+async def view_changes(request: Request,
+                       username: str = Depends(get_current_username)):
+    changes = masterChanges(recent = False)
+    return templates.TemplateResponse("master_changes.html",
+                                     {'request': request,
+                                      'changes': changes})

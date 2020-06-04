@@ -5,7 +5,7 @@
     <title>Edit Successful</title>
 </head>
 <body>
-    <h1>Edit successful!</h1>
+    <h1>Edit Successful!</h1>
     <h3>{{plaid_cat}} was moved from {{cat}} to {{destination}}</h3>
     <br>
     <ul>
@@ -17,6 +17,13 @@
         <br>
         <li><a href="/admin/db">View DB</a></li>
             <p>View the current state of the master table</p>
+    </ul>
+    <hr>
+    <h3>Last 5 master changes in order from newest to oldest</h3>
+    <ul>
+    {% for change in changes %}
+        <li>{{change}}</li>
+    {% endfor %}
     </ul>
 </body>
 </html>
