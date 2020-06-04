@@ -37,7 +37,6 @@ def resetUserTable():
 
     return 0
 
-
 def getUser(user_id):
     """
     Function that checks if the user is currently in the users table
@@ -75,7 +74,6 @@ def getUser(user_id):
         """
 
         new_dict = sql_to_dict(query1 = query1, query2 = query2, c = c)
-
 
         conn.close()
         
@@ -132,7 +130,6 @@ def updateUsers(new_dict: dict):
     conn.close()
     
     return 0
-
 
 def changePreferences(update: dict):
     """

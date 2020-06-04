@@ -35,16 +35,13 @@ PASSWORD = os.getenv("PASSWORD", default="OOPS")
 
 app = FastAPI()
 
-
 templates = Jinja2Templates(directory="templates")
-
 
 security = HTTPBasic()  
 
-
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_username = secrets.compare_digest(credentials.username, "test")
-    correct_password = secrets.compare_digest(credentials.password, "test")
+    correct_username = secrets.compare_digest(credentials.username, AUSERNAME)
+    correct_password = secrets.compare_digest(credentials.password, PASSWORD)
     if not (correct_username and correct_password):
         raise HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -73,7 +70,6 @@ def admin_main(request: Request,
                username: str = Depends(get_current_username)):
     return templates.TemplateResponse("admin_main.html",
                                      {'request': request})
-
 
 @app.get("/admin/reset_master_confirmation")
 def reset_master_confirmation(request: Request):
