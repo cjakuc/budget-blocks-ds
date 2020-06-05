@@ -13,6 +13,7 @@ import os
 from os.path import join, dirname
 from mainhelp import *
 from userDB import *
+from fastapi.middleware.cors import CORSMiddleware
 
 pkl_file = open('cats_new.pkl', 'rb')
 cats_dict = pickle.load(pkl_file)
@@ -34,6 +35,22 @@ AUSERNAME = os.getenv("AUSERNAME", default="OOPS")
 PASSWORD = os.getenv("PASSWORD", default="OOPS")
 
 app = FastAPI()
+
+# Attempt to fix local testing issues iwth CORSMiddleware
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:8080",
+    "http://localhost:8000"
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+    # allow_origin_regex="http://localhost:3000.*"
+)
 
 templates = Jinja2Templates(directory="templates")
 

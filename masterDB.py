@@ -251,7 +251,6 @@ def masterChanges(recent: bool = True):
     for i in temp:
         changes.append(i[1].replace("_", " "))
 
-
     conn.close()
         
     return changes
