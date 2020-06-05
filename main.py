@@ -14,6 +14,7 @@ from os.path import join, dirname
 from mainhelp import *
 from userDB import *
 from fastapi.middleware.cors import CORSMiddleware
+from census import census_totals
 
 pkl_file = open('cats_new.pkl', 'rb')
 cats_dict = pickle.load(pkl_file)
@@ -36,7 +37,7 @@ PASSWORD = os.getenv("PASSWORD", default="OOPS")
 
 app = FastAPI()
 
-# Attempt to fix local testing issues iwth CORSMiddleware
+# Attempt to fix local testing issues with CORSMiddleware
 origins = [
     "http://localhost",
     "http://localhost:3000",
@@ -76,9 +77,22 @@ def root():
 @app.post("/transaction/")
 def transaction(full_dict: dict):
     start_time = time.time()
+    # Instantiate TransactionHistory object
     trans = TransactionHistory(full_dict=full_dict)
+
+    # Get the user ID
     user_id = full_dict['user_id']
-    request = trans.getCats(cats_dict=getUser(user_id))
+
+    # Get user preferences
+    user_dict = getUser(user_id)
+    print(user_dict)
+
+    # Recategorize the transactions
+    # transactions = trans.getCats(cats_dict=getUser(user_id))
+    request = trans.getCats(cats_dict=user_dict)
+
+    # Retreive the census info for the right location and append it to the transactions JSON. Return it
+    # request = census_totals(transactions=transactions, location=full_dict['location'], user_dict=user_dict)
     print("--- %s seconds ---" % (time.time() - start_time))
     return request
 

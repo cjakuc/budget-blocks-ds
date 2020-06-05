@@ -6,13 +6,13 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+awsebcli = "*"
+geopy = "*"
 uvicorn = "*"
 fastapi = "*"
 gunicorn = "*"
 python-dotenv = "*"
-awsebcli = "*"
 jinja2 = "*"
-awscli = "*"
 
 [requires]
 python_version = "3.7"
