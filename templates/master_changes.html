@@ -9,10 +9,14 @@
     <hr>
     <h1>Master Changes in Order from Newest to Oldest</h1>
     <ul>
-    {% for change in changes %}
-        <li>Change: {{change[1]}} Time: {{change[0]}}</li>
-        <br>
-    {% endfor %}
+    {% if changes[0] == "No changes to display" %}
+        <li>No changes to display</li>
+    {% else %}
+        {% for change in changes %}
+            <li>Change: {{change[1]}} Time: {{change[0]}}</li>
+            <br>
+        {% endfor %}
+    {% endif %}
     </ul>
 </body>
 </html>
