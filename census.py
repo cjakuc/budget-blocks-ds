@@ -19,7 +19,7 @@ def census_totals(transactions, location, user_dict):
     Outputs: final_request - a JSON/dictionary that contains a user's transactions, location, user ID, and totals of personally categorized census expenditure averages for their area
     """
     # Find coordinates of user city
-    geolocator = Nominatim()
+    geolocator = Nominatim(user_agent="BudgetBlocks")
     city = location[0]
     state = location[1]
     country = "US"
