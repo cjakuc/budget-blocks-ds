@@ -58,8 +58,8 @@ templates = Jinja2Templates(directory="templates")
 security = HTTPBasic()  
 
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_username = secrets.compare_digest(credentials.username, AUSERNAME)
-    correct_password = secrets.compare_digest(credentials.password, PASSWORD)
+    correct_username = secrets.compare_digest(credentials.username, "test")
+    correct_password = secrets.compare_digest(credentials.password, "test")
     if not (correct_username and correct_password):
         raise HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -85,14 +85,14 @@ def transaction(full_dict: dict):
 
     # Get user preferences
     user_dict = getUser(user_id)
-    print(user_dict)
 
     # Recategorize the transactions
-    # transactions = trans.getCats(cats_dict=getUser(user_id))
-    request = trans.getCats(cats_dict=user_dict)
+    transactions = trans.getCats(cats_dict=getUser(user_id))
+    # request = trans.getCats(cats_dict=user_dict)
 
     # Retreive the census info for the right location and append it to the transactions JSON. Return it
-    # request = census_totals(transactions=transactions, location=full_dict['location'], user_dict=user_dict)
+    request = census_totals(transactions=transactions, location=full_dict['location'], user_dict=user_dict)
+
     print("--- %s seconds ---" % (time.time() - start_time))
     return request
 
@@ -148,7 +148,6 @@ async def testing(request: Request,
                                           'changes': changes})
     # Pull the current default from the master DB table
     Dict = masterPull()
-    
 
     # Use the helper function DictHTML to have 2 dictionaries:
         # one for displaying readable Plaid categories to the user and one for using to change the DB later

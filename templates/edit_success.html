@@ -22,7 +22,7 @@
     <h3>Last 5 master changes in order from newest to oldest</h3>
     <ul>
     {% for change in changes %}
-        <li>{{change}}</li>
+        <li>Change: {{change[1]}} Time: {{change[0]}}</li>
     {% endfor %}
     </ul>
 </body>

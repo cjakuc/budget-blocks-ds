@@ -27,12 +27,11 @@ def census_totals(transactions, location, user_dict):
     lat_lon = [loc.latitude,loc.longitude]
 
     # Find distances between all cities in census data, and user's city
-    # approximate radius of earth in km
-    distances = []
     cities = list(cities_dict.keys())
     min_distance = 100000
     closest_city = ''
     for city in cities:
+        # approximate radius of earth in km
         R = 6373.0
 
         lat1 = radians(lat_lon[0])
@@ -47,12 +46,13 @@ def census_totals(transactions, location, user_dict):
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
         distance = R * c
-        
-        distances.append(distance)
-        
+                
+        # Save the shortest distance to min_distance and the corresponding city to closest_city
         if distance < min_distance:
             min_distance = distance
             closest_city = city
+    # Print the miles to the closest city
+    print((min_distance*.621))
 
     # List of all PLAID categories in census data
     plaid_cats = list(census.keys())
@@ -61,16 +61,23 @@ def census_totals(transactions, location, user_dict):
     bb_cats = list(user_dict.keys())
 
     personalized_census = {}
+    # Add the closest city to the personalized census dict
+    personalized_census['City'] = closest_city
 
-
-    # pc_formatted = []
     for key in plaid_cats:
+        # Need to split the plaid_cats because they aren't formatted like they should be to compare
         new_key = key.split(', ', 1)
-        # pc_formatted.append(new_key)
 
         for i in bb_cats:
             for v in user_dict[i]:
-                if key == v:
+                if new_key == v:
+                    # Add the average expenditure of the corresponding city to the correct user BB cat value
+                    if i not in personalized_census:
+                        # Have to create a value for personalized_census[i] if it doesn't exist to do +=
+                        personalized_census[i] = 0
                     personalized_census[i] += census[key][closest_city]
-        
-
+    
+    # Add the corresponding data to the transactions dict
+    transactions['census'] = personalized_census
+    
+    return transactions

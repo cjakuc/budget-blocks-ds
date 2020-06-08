@@ -10,7 +10,7 @@
     <h1>Master Changes in Order from Newest to Oldest</h1>
     <ul>
     {% for change in changes %}
-        <li>{{change}}</li>
+        <li>Change: {{change[1]}} Time: {{change[0]}}</li>
         <br>
     {% endfor %}
     </ul>

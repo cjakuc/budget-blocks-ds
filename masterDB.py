@@ -2,6 +2,7 @@ import sqlite3 as sql
 import pickle
 import copy
 from DBhelper import dict_to_sql, sql_to_dict
+import datetime
 # from main import cats_dict
 
 pkl_file = open('cats_new.pkl', 'rb')
@@ -182,7 +183,7 @@ def updateChangeLog(plaid_cat, old_BB, new_BB):
     c.execute("""
     CREATE TABLE IF NOT EXISTS changelog
     (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    Changes TEXT)
+    Changes TEXT, Time TEXT)
     """)
 
 
@@ -191,12 +192,19 @@ def updateChangeLog(plaid_cat, old_BB, new_BB):
     # For whatever reason, when adding one column that's a string using the method we previous used it broke
     # repr() gives the "official" string representation and fixes issues with extra quotes, we think? It works
     message = repr(message)
-    
 
+    # Get the current date and time to add to the change log
+    current_time = str(datetime.datetime.now())
+
+    # insertion_query = f"""
+    # INSERT INTO changelog (Changes, Time)
+    # VALUES
+    # ({message})
+    # """
     insertion_query = f"""
-    INSERT INTO changelog (Changes)
+    INSERT INTO changelog (Changes, Time)
     VALUES
-    ({message})
+    {tuple((message, current_time))}
     """
 
     c.execute(insertion_query)
@@ -247,9 +255,9 @@ def masterChanges(recent: bool = True):
 
     temp = c.execute(query).fetchall()
 
-    # Get only the changes
+    # Clean up the changes
     for i in temp:
-        changes.append(i[1].replace("_", " "))
+        changes.append([i[2],i[1].replace("_", " ")])
 
     conn.close()
         

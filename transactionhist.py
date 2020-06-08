@@ -38,7 +38,7 @@ class TransactionHistory(BaseModel):
             
             numb_of_cats = len(cat_list)
             
-            print(cat_list)
+            # print(cat_list)
             
             # Cash Advance is the only Plaid main category with no sub categories, and they all are remapped to "Income"
             if (numb_of_cats == 1) & (cat_list == ["Cash Advance"]):
