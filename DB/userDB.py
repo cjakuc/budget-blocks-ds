@@ -1,8 +1,8 @@
-from masterDB import *
+from DB.masterDB import *
 import sqlite3 as sql
 import pickle
 import copy
-from DBhelper import sql_to_dict, dict_to_sql
+from DB.DBhelper import sql_to_dict, dict_to_sql
 from fastapi import HTTPException
 
 def resetUserTable():

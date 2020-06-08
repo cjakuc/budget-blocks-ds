@@ -1,11 +1,11 @@
 import sqlite3 as sql
 import pickle
 import copy
-from DBhelper import dict_to_sql, sql_to_dict
+from DB.DBhelper import dict_to_sql, sql_to_dict
 import datetime
 # from main import cats_dict
 
-pkl_file = open('cats_new.pkl', 'rb')
+pkl_file = open('./Pickle/cats_new.pkl', 'rb')
 cats_dict = pickle.load(pkl_file)
 pkl_file.close()
 
@@ -58,7 +58,7 @@ def resetMaster():
     conn.commit()
     # close connection
     conn.close()
-    from userDB import updateUsers
+    from DB.userDB import updateUsers
     updateUsers(cats_dict)
 
     return 0
@@ -163,7 +163,7 @@ def updateMaster(old_cat, plaid_cat, destination):
     # close connection
     conn.close()
 
-    from userDB import updateUsers
+    from DB.userDB import updateUsers
     updateUsers(new_dict)
     
     return 0

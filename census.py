@@ -2,11 +2,11 @@ import pickle
 from math import sin, cos, sqrt, atan2, radians
 from geopy.geocoders import Nominatim
 
-pkl_file = open('census.pkl', 'rb')
+pkl_file = open('Pickle/census.pkl', 'rb')
 census = pickle.load(pkl_file)
 pkl_file.close()
 
-pkl_file = open('cities_dict.pkl', 'rb')
+pkl_file = open('Pickle/cities_dict.pkl', 'rb')
 cities_dict = pickle.load(pkl_file)
 pkl_file.close()
 

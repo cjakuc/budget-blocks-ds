@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from transactionhist import *
 import pickle
 import time
-from masterDB import *
+from DB.masterDB import *
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -12,11 +12,11 @@ from dotenv import load_dotenv
 import os
 from os.path import join, dirname
 from mainhelp import *
-from userDB import *
+from DB.userDB import *
 from fastapi.middleware.cors import CORSMiddleware
 from census import census_totals
 
-pkl_file = open('cats_new.pkl', 'rb')
+pkl_file = open('Pickle/cats_new.pkl', 'rb')
 cats_dict = pickle.load(pkl_file)
 pkl_file.close()
 
@@ -58,8 +58,8 @@ templates = Jinja2Templates(directory="templates")
 security = HTTPBasic()  
 
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_username = secrets.compare_digest(credentials.username, "test")
-    correct_password = secrets.compare_digest(credentials.password, "test")
+    correct_username = secrets.compare_digest(credentials.username, AUSERNAME)
+    correct_password = secrets.compare_digest(credentials.password, PASSWORD)
     if not (correct_username and correct_password):
         raise HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
