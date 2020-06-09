@@ -94,7 +94,7 @@ def transaction(full_dict: dict):
     request = census_totals(transactions=transactions, location=full_dict['location'], user_dict=user_dict)
 
     print("--- %s seconds ---" % (time.time() - start_time))
-    
+
     return request
 
 @app.get("/admin")

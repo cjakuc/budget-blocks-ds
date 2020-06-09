@@ -52,7 +52,7 @@ def census_totals(transactions, location, user_dict):
             min_distance = distance
             closest_city = city
     # Print the miles to the closest city
-    print((min_distance*.621))
+    # print((min_distance*.621))
 
     # List of all PLAID categories in census data
     plaid_cats = list(census.keys())
@@ -79,7 +79,8 @@ def census_totals(transactions, location, user_dict):
                     # Add the average expenditure of the corresponding city to the correct user BB cat value
                         # Divide by 12 to go from annual to monthly
                     personalized_census[i] += (census[key][closest_city] / 12)
-
+                    
+    
     # Add the corresponding data to the transactions dict
     transactions['census'] = personalized_census
     
