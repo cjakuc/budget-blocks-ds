@@ -64,6 +64,11 @@ def census_totals(transactions, location, user_dict):
     # Add the closest city to the personalized census dict
     personalized_census['City'] = closest_city
 
+    # Make sure that there is a key for every category and they all start with a value of 0
+    for cat in bb_cats:
+        if cat not in personalized_census:
+            personalized_census[cat] = 0
+
     for key in plaid_cats:
         # Need to split the plaid_cats because they aren't formatted like they should be to compare
         new_key = key.split(', ', 1)
@@ -72,11 +77,9 @@ def census_totals(transactions, location, user_dict):
             for v in user_dict[i]:
                 if new_key == v:
                     # Add the average expenditure of the corresponding city to the correct user BB cat value
-                    if i not in personalized_census:
-                        # Have to create a value for personalized_census[i] if it doesn't exist to do +=
-                        personalized_census[i] = 0
-                    personalized_census[i] += census[key][closest_city]
-    
+                        # Divide by 12 to go from annual to monthly
+                    personalized_census[i] += (census[key][closest_city] / 12)
+
     # Add the corresponding data to the transactions dict
     transactions['census'] = personalized_census
     

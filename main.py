@@ -93,8 +93,10 @@ def transaction(full_dict: dict):
     # Retreive the census info for the right location and append it to the transactions JSON. Return it
     request = census_totals(transactions=transactions, location=full_dict['location'], user_dict=user_dict)
 
-    print("--- %s seconds ---" % (time.time() - start_time))
-    return request
+    # print("--- %s seconds ---" % (time.time() - start_time))
+
+    end_time = time.time() - start_time
+    return end_time
 
 @app.get("/admin")
 def admin_main(request: Request,
