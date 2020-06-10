@@ -21,11 +21,13 @@ def census_totals(transactions, location, user_dict):
     """
     # Find coordinates of user city
     geolocator = Nominatim(user_agent="aklefebvere@gmail.com")
+    # nom= Nominatim(domain='api.budgetblocks.org', scheme='https')
+    # nom= Nominatim(domain='localhost:8000', scheme='http')
     limit_geo = RateLimiter(geolocator.geocode, min_delay_seconds=1)
     city = location[0]
     state = location[1]
     country = "US"
-    loc = geolocator.geocode(city + ',' + state + ',' + country)
+    loc = limit_geo(city + ',' + state + ',' + country)
     lat_lon = [loc.latitude,loc.longitude]
 
     # Find distances between all cities in census data, and user's city
