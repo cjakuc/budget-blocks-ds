@@ -27,7 +27,7 @@ def census_totals(transactions, location, user_dict):
     city = location[0]
     state = location[1]
     country = "US"
-    loc = nom(city + ',' + state + ',' + country)
+    loc = nom.geocode(city + ',' + state + ',' + country)
     # print(type(loc))
     lat_lon = [loc.latitude,loc.longitude]
     # print(lat_lon)
