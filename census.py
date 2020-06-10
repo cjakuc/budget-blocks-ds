@@ -1,6 +1,7 @@
 import pickle
 from math import sin, cos, sqrt, atan2, radians
 from geopy.geocoders import Nominatim
+from geopy.extra.rate_limiter import RateLimiter
 
 pkl_file = open('Pickle/census.pkl', 'rb')
 census = pickle.load(pkl_file)
@@ -19,7 +20,8 @@ def census_totals(transactions, location, user_dict):
     Outputs: final_request - a JSON/dictionary that contains a user's transactions, location, user ID, and totals of personally categorized census expenditure averages for their area
     """
     # Find coordinates of user city
-    geolocator = Nominatim(user_agent="BudgetBlocks")
+    geolocator = Nominatim(user_agent="aklefebvere@gmail.com")
+    limit_geo = RateLimiter(geolocator.geocode, min_delay_seconds=1)
     city = location[0]
     state = location[1]
     country = "US"
