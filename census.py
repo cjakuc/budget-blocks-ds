@@ -20,7 +20,7 @@ def census_totals(transactions, location, user_dict):
     Outputs: final_request - a JSON/dictionary that contains a user's transactions, location, user ID, and totals of personally categorized census expenditure averages for their area
     """
     # Find coordinates of user city
-    geolocator = Nominatim(user_agent="aklefebvere@gmail.com")
+    geolocator = Nominatim(user_agent="BudgetBlocks")
     # nom= Nominatim(domain='api.budgetblocks.org', scheme='https')
     # nom= Nominatim(domain='localhost:8000', scheme='http')
     limit_geo = RateLimiter(geolocator.geocode, min_delay_seconds=1)
@@ -28,7 +28,9 @@ def census_totals(transactions, location, user_dict):
     state = location[1]
     country = "US"
     loc = limit_geo(city + ',' + state + ',' + country)
+    print(type(loc))
     lat_lon = [loc.latitude,loc.longitude]
+    print(lat_lon)
 
     # Find distances between all cities in census data, and user's city
     cities = list(cities_dict.keys())
