@@ -63,6 +63,14 @@ def census_totals(transactions, location, user_dict):
     personalized_census = {}
     # Add the closest city to the personalized census dict
     personalized_census['City'] = closest_city
+    # Save the region instead of closest_city if it's over 50 miles away
+        # Save the first index of census.keys to a variable because we only need to look at one
+    temp = list(census.keys())[0]
+    if (min_distance*.621) >= 50:
+        for region in list(census[temp].keys()):
+            if closest_city in list(census[temp][region].keys()):
+                personalized_census['City'] = region
+                closest_city = region
 
     # Make sure that there is a key for every category and they all start with a value of 0
     for cat in bb_cats:
@@ -78,8 +86,9 @@ def census_totals(transactions, location, user_dict):
                 if new_key == v:
                     # Add the average expenditure of the corresponding city to the correct user BB cat value
                         # Divide by 12 to go from annual to monthly
-                    personalized_census[i] += (census[key][closest_city] / 12)
-                    
+                    for region in list(census[key].keys()):
+                        if closest_city in list(census[key][region].keys()):
+                            personalized_census[i] += (census[key][region][closest_city] / 12)
     
     # Add the corresponding data to the transactions dict
     transactions['census'] = personalized_census
