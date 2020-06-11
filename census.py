@@ -24,12 +24,13 @@ def census_totals(location, user_dict):
     geolocator = Nominatim(user_agent="aklefebvere@gmail.com")
     # nom= Nominatim(domain='api.budgetblocks.org', scheme='https')
     # nom= Nominatim(domain='localhost:8000', scheme='http')
-    # limit_geo = RateLimiter(geolocator.geocode, min_delay_seconds=1)
+    limit_geo = RateLimiter(geolocator.geocode, min_delay_seconds=1)
+
     city = location[0]
     state = location[1]
     country = "US"
     try:
-        loc = geolocator.geocode(city + ',' + state + ',' + country)
+        loc = limit_geo(city + ',' + state + ',' + country)
     except GeocoderUnavailable as e:
         raise HTTPException(status_code=500, detail=f"Geopy: {e.message}")
     # print(type(loc))

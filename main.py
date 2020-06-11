@@ -87,11 +87,11 @@ def transaction(full_dict: dict):
     user_dict = getUser(user_id)
 
     # Recategorize the transactions
-    transactions = trans.getCats(cats_dict=getUser(user_id))
+    request = trans.getCats(cats_dict=getUser(user_id))
     # request = trans.getCats(cats_dict=user_dict)
 
     # Retreive the census info for the right location and append it to the transactions JSON. Return it
-    request = census_totals(transactions=transactions, location=full_dict['location'], user_dict=user_dict)
+    # request = census_totals(transactions=transactions, location=full_dict['location'], user_dict=user_dict)
 
     print("--- %s seconds ---" % (time.time() - start_time))
 
