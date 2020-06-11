@@ -28,6 +28,8 @@ def transaction(full_dict: dict):
 
     print("--- %s seconds ---" % (time.time() - start_time))
 
+    request['request time in seconds'] = (time.time() - start_time)
+
     return request
 
 @router.post("/census")
