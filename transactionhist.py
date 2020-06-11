@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from fastapi import HTTPException
-import time
 
 
 def reCatHelper(trans: dict, newCat: str, totals: dict):

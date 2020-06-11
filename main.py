@@ -15,6 +15,7 @@ from mainhelp import *
 from DB.userDB import *
 from fastapi.middleware.cors import CORSMiddleware
 from census import census_totals
+from routers import posts
 
 pkl_file = open('Pickle/cats_new.pkl', 'rb')
 cats_dict = pickle.load(pkl_file)
@@ -55,7 +56,9 @@ app.add_middleware(
 
 templates = Jinja2Templates(directory="templates")
 
-security = HTTPBasic()  
+security = HTTPBasic()
+
+app.include_router(posts.router)
 
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
     correct_username = secrets.compare_digest(credentials.username, AUSERNAME)
@@ -73,29 +76,29 @@ def root():
     # Written as a dict but returns a json object
     return {"message": 'Hello World!'}
 
-# End point for the web backend to send transaction history objects and get back the same object w/ BB categories
-@app.post("/transaction/")
-def transaction(full_dict: dict):
-    start_time = time.time()
-    # Instantiate TransactionHistory object
-    trans = TransactionHistory(full_dict=full_dict)
+# # End point for the web backend to send transaction history objects and get back the same object w/ BB categories
+# @app.post("/transaction/")
+# def transaction(full_dict: dict):
+#     start_time = time.time()
+#     # Instantiate TransactionHistory object
+#     trans = TransactionHistory(full_dict=full_dict)
 
-    # Get the user ID
-    user_id = full_dict['user_id']
+#     # Get the user ID
+#     user_id = full_dict['user_id']
 
-    # Get user preferences
-    user_dict = getUser(user_id)
+#     # Get user preferences
+#     user_dict = getUser(user_id)
 
-    # Recategorize the transactions
-    request = trans.getCats(cats_dict=getUser(user_id))
-    # request = trans.getCats(cats_dict=user_dict)
+#     # Recategorize the transactions
+#     request = trans.getCats(cats_dict=getUser(user_id))
+#     # request = trans.getCats(cats_dict=user_dict)
 
-    # Retreive the census info for the right location and append it to the transactions JSON. Return it
-    # request = census_totals(transactions=transactions, location=full_dict['location'], user_dict=user_dict)
+#     # Retreive the census info for the right location and append it to the transactions JSON. Return it
+#     # request = census_totals(transactions=transactions, location=full_dict['location'], user_dict=user_dict)
 
-    print("--- %s seconds ---" % (time.time() - start_time))
+#     print("--- %s seconds ---" % (time.time() - start_time))
 
-    return request
+#     return request
 
 @app.get("/admin")
 def admin_main(request: Request,
@@ -194,12 +197,12 @@ async def user(request: Request,
     return templates.TemplateResponse("reset_success.html",
                                      {'request': request,
                                       'message': message})
-@app.post("/update_users")
-async def update_users(update: dict):
-    new = changePreferences(update)
-    if new == 0:
-        message = "Updated preferences successfully"
-    return({"message": message})
+# @app.post("/update_users")
+# async def update_users(update: dict):
+#     new = changePreferences(update)
+#     if new == 0:
+#         message = "Updated preferences successfully"
+#     return({"message": message})
 
 # Route to display all changes in the change log table
 @app.get("/admin/changelog")
@@ -210,15 +213,15 @@ async def view_changes(request: Request,
                                      {'request': request,
                                       'changes': changes})
 
-@app.post("/census")
-async def user_census(census: dict):
-    location = census['location']
+# @app.post("/census")
+# async def user_census(census: dict):
+#     location = census['location']
 
-    user_id = census['user_id']
+#     user_id = census['user_id']
 
-    user_dict = getUser(user_id)
+#     user_dict = getUser(user_id)
 
-    personalized_census = census_totals(location=location, user_dict=user_dict)
+#     personalized_census = census_totals(location=location, user_dict=user_dict)
 
-    return personalized_census
+#     return personalized_census
     
