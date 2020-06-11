@@ -209,3 +209,16 @@ async def view_changes(request: Request,
     return templates.TemplateResponse("master_changes.html",
                                      {'request': request,
                                       'changes': changes})
+
+@app.post("/census")
+async def user_census(census: dict):
+    location = census['location']
+
+    user_id = census['user_id']
+
+    user_dict = getUser(user_id)
+
+    personalized_census = census_totals(location=location, user_dict=user_dict)
+
+    return personalized_census
+    

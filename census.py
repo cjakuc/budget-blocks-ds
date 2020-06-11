@@ -2,6 +2,8 @@ import pickle
 from math import sin, cos, sqrt, atan2, radians
 from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
+from geopy.exc import GeocoderUnavailable
+from fastapi import HTTPException
 
 pkl_file = open('Pickle/census.pkl', 'rb')
 census = pickle.load(pkl_file)
@@ -11,13 +13,12 @@ pkl_file = open('Pickle/cities_dict.pkl', 'rb')
 cities_dict = pickle.load(pkl_file)
 pkl_file.close()
 
-def census_totals(transactions, location, user_dict):
+def census_totals(location, user_dict):
     """
     Function to create the categorized census average expenditures of a user's area, according to a user's categorical preferences, then append it onto and return their transactions dictionary
-    Inputs: transactions - dictionary of a user's categorized (BB) transactions
-            location - a user's location (list: city, state)
+    Inputs: location - a user's location (list: city, state)
             user_dict - a user's categorization preferences
-    Outputs: final_request - a JSON/dictionary that contains a user's transactions, location, user ID, and totals of personally categorized census expenditure averages for their area
+    Outputs: final_request - a JSON/dictionary that contains a user's location, user ID, and totals of personally categorized census expenditure averages for their area
     """
     # Find coordinates of user city
     geolocator = Nominatim(user_agent="aklefebvere@gmail.com")
@@ -27,7 +28,10 @@ def census_totals(transactions, location, user_dict):
     city = location[0]
     state = location[1]
     country = "US"
-    loc = geolocator.geocode(city + ',' + state + ',' + country)
+    try:
+        loc = geolocator.geocode(city + ',' + state + ',' + country)
+    except GeocoderUnavailable as e:
+        raise HTTPException(status_code=500, detail=f"Geopy: {e.message}")
     # print(type(loc))
     lat_lon = [loc.latitude,loc.longitude]
     # print(lat_lon)
@@ -96,7 +100,7 @@ def census_totals(transactions, location, user_dict):
                         if closest_city in list(census[key][region].keys()):
                             personalized_census[i] += (census[key][region][closest_city] / 12)
     
-    # Add the corresponding data to the transactions dict
-    transactions['census'] = personalized_census
+    # # Add the corresponding data to the transactions dict
+    # transactions['census'] = personalized_census
     
-    return transactions
+    return personalized_census
