@@ -160,7 +160,7 @@ class UpdatePreferences(BaseModel):
                 "plaid_cats":["Third Party", "Betterment"],
                 "old_BB": "savings",
                 "new_BB": "transfer",
-                "user_id": 1
+                "user_id": True
             }
         }
 
@@ -191,14 +191,14 @@ class UpdatePreferences(BaseModel):
         query1 = f"""
         SELECT Key
         from users
-        WHERE user_id is {user_id}
+        WHERE user_id = {user_id}
         """
 
         # Query the users table for the strings that contain the lists of values separated by '/'
         query2 = f"""
         SELECT PLAID_Values
         from users
-        WHERE user_id is {user_id}
+        WHERE user_id = {user_id}
         """
         
         new_dict = sql_to_dict(query1 = query1, query2 = query2, c = c)
@@ -217,14 +217,14 @@ class UpdatePreferences(BaseModel):
         delete_query = f"""
         DELETE
         FROM users
-        WHERE user_id is {user_id}
+        WHERE user_id = {user_id}
         """
 
         c.execute(delete_query)
 
         # Insert the new
         dict_to_sql(current_dict = new_dict, is_master = False,
-                    user_id = user_id, c = c, is_old_custom = 1)
+                    user_id = user_id, c = c, is_old_custom = True)
 
         conn.commit()
         conn.close()

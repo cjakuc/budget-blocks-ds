@@ -148,7 +148,7 @@ def updateMaster(old_cat, plaid_cat, destination):
     delete_query = """
     DELETE
     FROM master
-    WHERE is_old is TRUE
+    WHERE is_old = TRUE
     """
     c.execute(delete_query)
 
