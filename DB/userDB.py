@@ -10,10 +10,11 @@ import os
 
 load_dotenv()
 
-dbname = os.getenv("dbname", default="OOPS")
-user = os.getenv("user", default="OOPS")
-dbpassword = os.getenv("dbpassword", default="OOPS")
-host = os.getenv("host", default="OOPS")
+DBNAME = os.getenv("DBNAME", default="OOPS")
+AUSER = os.getenv("AUSER", default="OOPS")
+DBPASSWORD = os.getenv("DBPASSWORD", default="OOPS")
+HOST = os.getenv("HOST", default="OOPS")
+
 def resetUserTable():
     """
     Function to create user table to store custom categorization preferences
@@ -21,8 +22,8 @@ def resetUserTable():
     Output: None
     """
     # Create the Connection object to the 'BudgetBlocks' DB
-    conn = psycopg2.connect(dbname=dbname, user=user,
-                            password=dbpassword, host=host)
+    conn = psycopg2.connect(dbname=DBNAME, user=AUSER,
+                            password=DBPASSWORD, host=HOST)
 
     # Create the Cursor object
     c = conn.cursor()
@@ -55,8 +56,8 @@ def getUser(user_id):
     Inputs: Unique user id
     Output: A dict of the user's preferences
     """
-    conn = psycopg2.connect(dbname=dbname, user=user,
-                            password=dbpassword, host=host)
+    conn = psycopg2.connect(dbname=DBNAME, user=AUSER,
+                            password=DBPASSWORD, host=HOST)
 
     c = conn.cursor()
 
@@ -110,8 +111,8 @@ def updateUsers(new_dict: dict):
     Inputs: Dictionairy of new defaults
     Outputs: None
     """
-    conn = psycopg2.connect(dbname=dbname, user=user,
-                            password=dbpassword, host=host)
+    conn = psycopg2.connect(dbname=DBNAME, user=AUSER,
+                            password=DBPASSWORD, host=HOST)
 
     c = conn.cursor()
 
@@ -179,8 +180,8 @@ class UpdatePreferences(BaseModel):
         new_BB = self.new_BB
         user_id = self.user_id
 
-        conn = psycopg2.connect(dbname=dbname, user=user,
-                                password=dbpassword, host=host)
+        conn = psycopg2.connect(dbname=DBNAME, user=AUSER,
+                            password=DBPASSWORD, host=HOST)
 
         c = conn.cursor()
         

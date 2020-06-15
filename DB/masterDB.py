@@ -14,10 +14,11 @@ pkl_file.close()
 
 load_dotenv()
 
-dbname = os.getenv("dbname", default="OOPS")
-user = os.getenv("user", default="OOPS")
-dbpassword = os.getenv("dbpassword", default="OOPS")
-host = os.getenv("host", default="OOPS")
+DBNAME = os.getenv("DBNAME", default="OOPS")
+AUSER = os.getenv("AUSER", default="OOPS")
+DBPASSWORD = os.getenv("DBPASSWORD", default="OOPS")
+HOST = os.getenv("HOST", default="OOPS")
+
 def resetMaster():
     """
     Function to create master table to store default categorization preferences
@@ -27,8 +28,8 @@ def resetMaster():
     """
     # Create the Connection object to the 'BudgetBlocks' DB
     # conn = sql.connect('BudgetBlocks.db')
-    conn = psycopg2.connect(dbname=dbname, user=user,
-                            password=dbpassword, host=host)
+    conn = psycopg2.connect(dbname=DBNAME, user=AUSER,
+                            password=DBPASSWORD, host=HOST)
 
     # Create the Cursor object
     c = conn.cursor()
@@ -82,8 +83,8 @@ def masterPull():
              the Plaid categories that belong to the Budget Block categories
     """
     # Create the Connection object to the 'BudgetBlocks' DB
-    conn = psycopg2.connect(dbname=dbname, user=user,
-                            password=dbpassword, host=host)
+    conn = psycopg2.connect(dbname=DBNAME, user=AUSER,
+                            password=DBPASSWORD, host=HOST)
 
     # Create the Cursor object
     c = conn.cursor()
@@ -137,8 +138,8 @@ def updateMaster(old_cat, plaid_cat, destination):
 
     # Query the master table to check if there is a new dict there
     # Create the Connection object to the 'BudgetBlocks' DB
-    conn = psycopg2.connect(dbname=dbname, user=user,
-                            password=dbpassword, host=host)
+    conn = psycopg2.connect(dbname=DBNAME, user=AUSER,
+                            password=DBPASSWORD, host=HOST)
 
     # Create the Cursor object
     c = conn.cursor()
@@ -179,8 +180,8 @@ def updateChangeLog(plaid_cat, old_BB, new_BB):
     Function to store any changes to the master 
     """
     # Create the Connection object to the 'BudgetBlocks' DB
-    conn = psycopg2.connect(dbname=dbname, user=user,
-                            password=dbpassword, host=host)
+    conn = psycopg2.connect(dbname=DBNAME, user=AUSER,
+                            password=DBPASSWORD, host=HOST)
 
     # Create the Cursor object
     c = conn.cursor()
@@ -226,8 +227,8 @@ def masterChanges(recent: bool = True):
     """
 
     # Create the Connection object to the 'BudgetBlocks' DB
-    conn = psycopg2.connect(dbname=dbname, user=user,
-                            password=dbpassword, host=host)
+    conn = psycopg2.connect(dbname=DBNAME, user=AUSER,
+                            password=DBPASSWORD, host=HOST)
 
     # Create the Cursor object
     c = conn.cursor()
