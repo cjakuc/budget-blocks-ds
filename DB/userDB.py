@@ -160,7 +160,7 @@ class UpdatePreferences(BaseModel):
                 "plaid_cats":["Third Party", "Betterment"],
                 "old_BB": "savings",
                 "new_BB": "transfer",
-                "user_id": True
+                "user_id": 1
             }
         }
 
