@@ -4,7 +4,16 @@ import pickle
 import copy
 from DB.DBhelper import sql_to_dict, dict_to_sql
 from fastapi import HTTPException
+from pydantic import BaseModel
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+
+dbname = os.getenv("dbname", default="OOPS")
+user = os.getenv("user", default="OOPS")
+dbpassword = os.getenv("dbpassword", default="OOPS")
+host = os.getenv("host", default="OOPS")
 def resetUserTable():
     """
     Function to create user table to store custom categorization preferences
@@ -12,7 +21,8 @@ def resetUserTable():
     Output: None
     """
     # Create the Connection object to the 'BudgetBlocks' DB
-    conn = sql.connect('BudgetBlocks.db')
+    conn = psycopg2.connect(dbname=dbname, user=user,
+                            password=dbpassword, host=host)
 
     # Create the Cursor object
     c = conn.cursor()
@@ -45,32 +55,34 @@ def getUser(user_id):
     Inputs: Unique user id
     Output: A dict of the user's preferences
     """
-    conn = sql.connect('BudgetBlocks.db')
+    conn = psycopg2.connect(dbname=dbname, user=user,
+                            password=dbpassword, host=host)
 
     c = conn.cursor()
 
     find_user = (f"""
     SELECT *
     FROM users
-    WHERE user_id is {user_id}
+    WHERE user_id = {user_id}
     """)
 
-    a_user = c.execute(find_user).fetchall()
+    c.execute(find_user)
 
+    a_user = c.fetchall()
     # if the user already exists in the DB, grab whats currently there
     if a_user != []:
         # Query the master table for the keys and save them to val
         query1 = f"""
         SELECT Key
         from users
-        WHERE user_id is {user_id}
+        WHERE user_id = {user_id}
         """
 
         # Query the master table for the strings that contain the lists of values separated by '/'
         query2 = f"""
         SELECT PLAID_Values
         from users
-        WHERE user_id is {user_id}
+        WHERE user_id = {user_id}
         """
 
         new_dict = sql_to_dict(query1 = query1, query2 = query2, c = c)
@@ -83,7 +95,7 @@ def getUser(user_id):
     else:
         current_dict = masterPull()
         dict_to_sql(current_dict = current_dict, is_master = False, 
-                    is_old_custom = 0, c = c, user_id = user_id) 
+                    is_old_custom = False, c = c, user_id = user_id) 
 
         conn.commit()
 
@@ -98,16 +110,20 @@ def updateUsers(new_dict: dict):
     Inputs: Dictionairy of new defaults
     Outputs: None
     """
-    conn = sql.connect('BudgetBlocks.db')
+    conn = psycopg2.connect(dbname=dbname, user=user,
+                            password=dbpassword, host=host)
 
     c = conn.cursor()
 
     modify_check = """
     SELECT DISTINCT user_id
     FROM users
-    WHERE is_custom is 0
+    WHERE is_custom = FALSE
     """
-    modified = c.execute(modify_check).fetchall()
+    c.execute(modify_check)
+
+    modified = c.fetchall()
+    
     if modified == []:
         return 0
     user_ids = []
@@ -118,81 +134,98 @@ def updateUsers(new_dict: dict):
     delete_query = """
     DELETE
     FROM users
-    WHERE is_custom is 0
+    WHERE is_custom = False
     """
     c.execute(delete_query)
 
     for user in user_ids:
         dict_to_sql(current_dict = new_dict, is_master = False, 
-                    is_old_custom = 0, c = c, user_id = user)
+                    is_old_custom = False, c = c, user_id = user)
 
     conn.commit()
     conn.close()
     
     return 0
 
-def changePreferences(update: dict):
-    """
-    Function to update a user's ctaegorical preferences in the users table
-    Inputs: update - dictionary containing:
+class UpdatePreferences(BaseModel):
+    plaid_cats: list
+    old_BB: str
+    new_BB: str
+    user_id: int
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "plaid_cats":["Third Party", "Betterment"],
+                "old_BB": "savings",
+                "new_BB": "transfer",
+                "user_id": 1
+            }
+        }
+
+    def changePreferences(self):
+        """
+        Function to update a user's categorical preferences in the users table
+        Inputs: update - dictionary containing:
                 plaid_cats - the plaid_cats to be moved
                 old_BB - the Budget Blocks category where the plaid cats currently are
                 new_BB - the Budget Blocks category where the plaid cats will be moved to
                 user_id - the user ID
-    Outputs: None
-    """
-    # If the user doesn't already exist then it breaks
-    plaid_cats = update['plaid_cats']
-    old_BB = update['old_BB']
-    new_BB = update['new_BB']
-    user_id = update['user_id']
+        Outputs: None
+        """
+        # If the user doesn't already exist then it breaks
+        plaid_cats = self.plaid_cats
+        old_BB = self.old_BB
+        new_BB = self.new_BB
+        user_id = self.user_id
 
-    conn = sql.connect('BudgetBlocks.db')
+        conn = psycopg2.connect(dbname=dbname, user=user,
+                                password=dbpassword, host=host)
 
-    c = conn.cursor()
-    
-    keys = []
-    values = []
-    # Query the users table for the keys and save them to val
-    query1 = f"""
-    SELECT Key
-    from users
-    WHERE user_id is {user_id}
-    """
-
-    # Query the users table for the strings that contain the lists of values separated by '/'
-    query2 = f"""
-    SELECT PLAID_Values
-    from users
-    WHERE user_id is {user_id}
-    """
-    
-    new_dict = sql_to_dict(query1 = query1, query2 = query2, c = c)
-
-    # Exception for if plaid_cats is not in old_BB
-    if plaid_cats not in new_dict[old_BB]:
-        raise HTTPException(status_code=500, detail=f"{plaid_cats} is not in {old_BB} for user {user_id}")
-    
-    else:
-        # Remove the plaid_cat from the old_cat's value list
-        new_dict[old_BB].remove(plaid_cats)
-
-        # Add the plaid_cat to the destination's value list
-        new_dict[new_BB].append(plaid_cats)
+        c = conn.cursor()
         
-    delete_query = f"""
-    DELETE
-    FROM users
-    WHERE user_id is {user_id}
-    """
+        keys = []
+        values = []
+        # Query the users table for the keys and save them to val
+        query1 = f"""
+        SELECT Key
+        from users
+        WHERE user_id is {user_id}
+        """
 
-    c.execute(delete_query)
+        # Query the users table for the strings that contain the lists of values separated by '/'
+        query2 = f"""
+        SELECT PLAID_Values
+        from users
+        WHERE user_id is {user_id}
+        """
+        
+        new_dict = sql_to_dict(query1 = query1, query2 = query2, c = c)
 
-   # Insert the new
-    dict_to_sql(current_dict = new_dict, is_master = False,
-                user_id = user_id, c = c, is_old_custom = 1)
+        # Exception for if plaid_cats is not in old_BB
+        if plaid_cats not in new_dict[old_BB]:
+            raise HTTPException(status_code=500, detail=f"{plaid_cats} is not in {old_BB} for user {user_id}")
+        
+        else:
+            # Remove the plaid_cat from the old_cat's value list
+            new_dict[old_BB].remove(plaid_cats)
 
-    conn.commit()
-    conn.close()
+            # Add the plaid_cat to the destination's value list
+            new_dict[new_BB].append(plaid_cats)
+            
+        delete_query = f"""
+        DELETE
+        FROM users
+        WHERE user_id is {user_id}
+        """
 
-    return 0
+        c.execute(delete_query)
+
+        # Insert the new
+        dict_to_sql(current_dict = new_dict, is_master = False,
+                    user_id = user_id, c = c, is_old_custom = 1)
+
+        conn.commit()
+        conn.close()
+
+        return 0

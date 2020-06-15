@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 awsebcli = "*"
 geopy = "*"
+psycopg2-binary = "*"
 uvicorn = "*"
 fastapi = "*"
 gunicorn = "*"

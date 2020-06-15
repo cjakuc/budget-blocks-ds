@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from fastapi import HTTPException
-
+from pydantic import BaseModel
 
 def reCatHelper(trans: dict, newCat: str, totals: dict):
     """
@@ -22,7 +22,59 @@ def reCatHelper(trans: dict, newCat: str, totals: dict):
     return trans
 
 class TransactionHistory(BaseModel):
-    full_dict:  dict = None
+    transactions:  list
+    user_id: int
+
+    # Example JSON for the transaction request
+    class Config:
+        schema_extra = {
+            "example": {
+                "transactions": [
+                    {
+                        "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+                        "account_owner": 0,
+                        "amount": 25,
+                        "authorized_date": 0,
+                        "category": [
+                        "Payment",
+                        "Credit Card"
+                        ],
+                        "category_id": "16001000",
+                        "date": "2020-05-15",
+                        "iso_currency_code": "USD",
+                        "location": {
+                        "address": 0,
+                        "city": 0,
+                        "country": 0,
+                        "lat": 0,
+                        "lon": 0,
+                        "postal_code": 0,
+                        "region": 0,
+                        "store_number": 0
+                        },
+                        "name": "CREDIT CARD 3333 PAYMENT *//",
+                        "payment_channel": "other",
+                        "payment_meta": {
+                        "by_order_of": 0,
+                        "payee": 0,
+                        "payer": 0,
+                        "payment_method": 0,
+                        "payment_processor": 0,
+                        "ppd_id": 0,
+                        "reason": 0,
+                        "reference_number": 0
+                        },
+                        "pending": False,
+                        "pending_transaction_id": 0,
+                        "transaction_code": 0,
+                        "transaction_id": "47E1jBQLoNhA6ajvnLeLCX4NwvKQmnFd7wQ8K",
+                        "transaction_type": "special",
+                        "unofficial_currency_code": 0
+                    }
+                ],
+                "user_id": 1
+            }
+            }
 
     def getCats(self, cats_dict: dict):
         """
@@ -31,7 +83,7 @@ class TransactionHistory(BaseModel):
                    a dictionary whose keys are the budget blocks categories and the values are its corresponding Plaid categories
         Returns: a JSON object of all the transactions with the budget blocks categorizations
         """
-        transactions = self.full_dict['transactions']
+        transactions = self.transactions
         # Dictionary to store the totals of each BB category
         totals = {}
         # Create a key in totals for each BB category so we can do += later
@@ -79,7 +131,7 @@ class TransactionHistory(BaseModel):
 
         # Putting the transactions back into the dict so match what was plugged in
         temp_dict = {"transactions": transactions,
-                    "user_id": self.full_dict['user_id'],
+                    "user_id": self.user_id,
                     "totals": totals}
 
         return temp_dict

@@ -1,8 +1,7 @@
 from fastapi import HTTPException
-import sqlite3 as sql
+import psycopg2
 
-
-def dict_to_sql(current_dict: dict, is_master: bool, is_old_custom: int, c, user_id: int = None):
+def dict_to_sql(current_dict: dict, is_master: bool, is_old_custom: bool, c, user_id: int = None):
     """
     Function to take a dictionary and write it to either the master or users tables
     Inputs: current_dict - The dictionary to input into the table
@@ -13,7 +12,7 @@ def dict_to_sql(current_dict: dict, is_master: bool, is_old_custom: int, c, user
     Outputs: None
     """
     # Raise exception if is_old_custom != 0 or 1
-    if (is_old_custom != 0) & (is_old_custom != 1):
+    if (is_old_custom != False) & (is_old_custom != True):
         raise HTTPException(status_code=500, detail=f"In dict_to_sql, is_old_custom was not 0 or 1")
     
     if is_master:
@@ -58,14 +57,21 @@ def sql_to_dict(query1: str, query2: str, c):
             c - cursor object
     Outputs: new_dict - dictionary of keys and values
     """
+    
+
     keys = []
-    val = c.execute(query1).fetchall()
+
+    c.execute(query1)
+
+    val = c.fetchall()
     # Iterate through each key and append it to keys
     for i in val:
         keys.append(i[0])
 
     values = []
-    vals = c.execute(query2).fetchall()
+    c.execute(query2)
+
+    vals = c.fetchall()
     # Iterate through the string values and do some splitting to turn them into the correct list of lists format
     for i in vals:
         words = i[0]

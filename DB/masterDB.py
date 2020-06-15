@@ -3,12 +3,21 @@ import pickle
 import copy
 from DB.DBhelper import dict_to_sql, sql_to_dict
 import datetime
+import psycopg2
+from dotenv import load_dotenv
+import os
 # from main import cats_dict
 
 pkl_file = open('./Pickle/cats_new.pkl', 'rb')
 cats_dict = pickle.load(pkl_file)
 pkl_file.close()
 
+load_dotenv()
+
+dbname = os.getenv("dbname", default="OOPS")
+user = os.getenv("user", default="OOPS")
+dbpassword = os.getenv("dbpassword", default="OOPS")
+host = os.getenv("host", default="OOPS")
 def resetMaster():
     """
     Function to create master table to store default categorization preferences
@@ -17,7 +26,9 @@ def resetMaster():
     Output: None
     """
     # Create the Connection object to the 'BudgetBlocks' DB
-    conn = sql.connect('BudgetBlocks.db')
+    # conn = sql.connect('BudgetBlocks.db')
+    conn = psycopg2.connect(dbname=dbname, user=user,
+                            password=dbpassword, host=host)
 
     # Create the Cursor object
     c = conn.cursor()
@@ -48,11 +59,11 @@ def resetMaster():
     
     # "New" default entries in master table
     dict_to_sql(current_dict = cats_dict, is_master = True, 
-                    is_old_custom = 1, c = c)
+                    is_old_custom = True, c = c)
 
     # "Old" default entries in master table
     dict_to_sql(current_dict = cats_dict, is_master = True, 
-                    is_old_custom = 0, c = c)
+                    is_old_custom = False, c = c)
 
     # commit changes (if any)
     conn.commit()
@@ -71,24 +82,17 @@ def masterPull():
              the Plaid categories that belong to the Budget Block categories
     """
     # Create the Connection object to the 'BudgetBlocks' DB
-    conn = sql.connect('BudgetBlocks.db')
+    conn = psycopg2.connect(dbname=dbname, user=user,
+                            password=dbpassword, host=host)
 
     # Create the Cursor object
     c = conn.cursor()
 
     # Query the master table for the keys and save them to val
-    query1 = f"""
-    SELECT Key
-    from master
-    WHERE is_old is 0
-    """
+    query1 = "SELECT Key from master WHERE is_old is FALSE"
 
     # Query the master table for the strings that contain the lists of values separated by '/'
-    query2 = f"""
-    SELECT PLAID_Values
-    from master
-    WHERE is_old is 0
-    """
+    query2 = "SELECT PLAID_Values from master WHERE is_old is FALSE"
     new_dict = sql_to_dict(query1 = query1, query2 = query2, c = c)
 
     # commit changes (if any)
@@ -133,7 +137,8 @@ def updateMaster(old_cat, plaid_cat, destination):
 
     # Query the master table to check if there is a new dict there
     # Create the Connection object to the 'BudgetBlocks' DB
-    conn = sql.connect('BudgetBlocks.db')
+    conn = psycopg2.connect(dbname=dbname, user=user,
+                            password=dbpassword, host=host)
 
     # Create the Cursor object
     c = conn.cursor()
@@ -142,20 +147,20 @@ def updateMaster(old_cat, plaid_cat, destination):
     delete_query = """
     DELETE
     FROM master
-    WHERE is_old is 1
+    WHERE is_old is TRUE
     """
     c.execute(delete_query)
 
     # Make the current new, old
     replace_query = """
     Update master
-    Set is_old = replace(is_old, 0, 1) 
+    Set is_old = TRUE
     """
     c.execute(replace_query)
 
     # Insert the newly made cats as the new dict
     dict_to_sql(current_dict = new_dict, is_master = True, 
-                is_old_custom = 0, c = c)
+                is_old_custom = False, c = c)
 
     
     # commit changes (if any)
@@ -174,24 +179,22 @@ def updateChangeLog(plaid_cat, old_BB, new_BB):
     Function to store any changes to the master 
     """
     # Create the Connection object to the 'BudgetBlocks' DB
-    conn = sql.connect('BudgetBlocks.db')
+    conn = psycopg2.connect(dbname=dbname, user=user,
+                            password=dbpassword, host=host)
 
     # Create the Cursor object
     c = conn.cursor()
 
     # Create table if it doesn't exist
-    c.execute("""
-    CREATE TABLE IF NOT EXISTS changelog
-    (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    Changes TEXT, Time TEXT)
-    """)
+    c.execute("CREATE TABLE IF NOT EXISTS changelog(ID SERIAL PRIMARY KEY, Changes TEXT, Time TEXT);")
 
+    conn.commit()
 
     message = f"{plaid_cat} was moved from {old_BB} to {new_BB}"
 
     # For whatever reason, when adding one column that's a string using the method we previous used it broke
     # repr() gives the "official" string representation and fixes issues with extra quotes, we think? It works
-    message = repr(message)
+    # message = repr(message)
 
     # Get the current date and time to add to the change log
     current_time = str(datetime.datetime.now())
@@ -223,17 +226,20 @@ def masterChanges(recent: bool = True):
     """
 
     # Create the Connection object to the 'BudgetBlocks' DB
-    conn = sql.connect('BudgetBlocks.db')
+    conn = psycopg2.connect(dbname=dbname, user=user,
+                            password=dbpassword, host=host)
 
     # Create the Cursor object
     c = conn.cursor()
 
     # Get the count of tables with the name "changelog"
-    c.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='changelog' ''')
+    c.execute("SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'changelog');")
+
+    check = c.fetchall()[0][0]
 
     changes = []
     #if the count is 0, then table does not exist, return that there are no changes
-    if c.fetchone()[0]==0:
+    if check == False:
         changes.append("No changes to display")
         return changes
 
@@ -253,7 +259,9 @@ def masterChanges(recent: bool = True):
         ORDER BY id DESC
         """
 
-    temp = c.execute(query).fetchall()
+    c.execute(query)
+
+    temp = c.fetchall()
 
     # Clean up the changes
     for i in temp:

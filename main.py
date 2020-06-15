@@ -12,7 +12,26 @@ from routers import posts, admin
 # when running the model, "main" is the python file and "app"
 # is the variable name that is holding the FastAPI class (main:app)
 
-app = FastAPI()
+tags_metadata = [
+    {
+        "name": "transaction",
+        "description": "Automatically categorizes PLAID transactions into BudgetBlocks categories using the user's preferences or if they do not exist, the default preferences",
+    },
+    {
+        "name": "census",
+        "description": "Returns the categorized census average expenditures of the closest city in the census data or the region if the closest city is farther than 50 miles away",
+    },
+    {
+        "name": "update_users",
+        "description": "Updates a user's categorical preferences in the users table",
+    },
+    {
+        "name": "Admin",
+        "description": "Admin interface routes; accessible upon login through api.budgetblocks.org/admin"
+    }
+]
+
+app = FastAPI(openapi_tags=tags_metadata)
 
 app.add_middleware(
     CORSMiddleware,

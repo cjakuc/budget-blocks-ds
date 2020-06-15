@@ -7,14 +7,12 @@ import time
 router = APIRouter()
 
 # End point for the web backend to send transaction history objects and get back the same object w/ BB categories
-@router.post("/transaction/")
-def transaction(full_dict: dict):
+@router.post("/transaction/", tags=["transaction"])
+def transaction(trans: TransactionHistory):
     start_time = time.time()
-    # Instantiate TransactionHistory object
-    trans = TransactionHistory(full_dict=full_dict)
 
     # Get the user ID
-    user_id = full_dict['user_id']
+    user_id = trans.user_id
 
     # Get user preferences
     user_dict = getUser(user_id)
@@ -32,21 +30,20 @@ def transaction(full_dict: dict):
 
     return request
 
-@router.post("/census")
-async def user_census(census: dict):
-    location = census['location']
+@router.post("/census", tags=["census"])
+async def user_census(census: Census):
 
-    user_id = census['user_id']
+    user_id = census.user_id
 
     user_dict = getUser(user_id)
 
-    personalized_census = census_totals(location=location, user_dict=user_dict)
+    personalized_census = census.census_totals(user_dict=user_dict)
 
     return personalized_census
 
-@router.post("/update_users")
-async def update_users(update: dict):
-    new = changePreferences(update)
+@router.post("/update_users", tags=["update_users"])
+async def update_users(update: UpdatePreferences):
+    new = update.changePreferences()
     if new == 0:
         message = "Updated preferences successfully"
     return({"message": message})

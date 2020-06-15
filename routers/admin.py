@@ -20,7 +20,7 @@ templates = Jinja2Templates(directory="templates")
 
 security = HTTPBasic()
 
-def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
+def get_current_username(credentials: HTTPBasicCredentials = Depends(security), tags=["admin"]):
     correct_username = secrets.compare_digest(credentials.username, AUSERNAME)
     correct_password = secrets.compare_digest(credentials.password, PASSWORD)
     if not (correct_username and correct_password):
@@ -31,23 +31,23 @@ def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
     )
     return credentials.username
 
-@router.get("/admin")
+@router.get("/admin", tags=["admin"])
 def admin_main(request: Request,
                username: str = Depends(get_current_username)):
     return templates.TemplateResponse("admin_main.html",
                                      {'request': request})
 
-@router.get("/admin/reset_master_confirmation")
+@router.get("/admin/reset_master_confirmation", tags=["admin"])
 def reset_master_confirmation(request: Request):
     return templates.TemplateResponse("master_confirmation.html",
                                      {'request': request})
 
-@router.get("/admin/reset_user_confirmation")
+@router.get("/admin/reset_user_confirmation", tags=["admin"])
 def reset_user_confirmation(request: Request):
     return templates.TemplateResponse("user_confirmation.html",
                                      {'request': request})
 
-@router.get("/admin/reset_master/")
+@router.get("/admin/reset_master/", tags=["admin"])
 def reset_master(request: Request, username: str = Depends(get_current_username)):
     resetMaster()
     message = "The master table was reset"
@@ -56,7 +56,7 @@ def reset_master(request: Request, username: str = Depends(get_current_username)
                                       'message': message})
 
 # Admin route to edit the master DB table through an interface
-@router.get("/admin/edit_master")
+@router.get("/admin/edit_master", tags=["admin"])
 async def testing(request: Request,
                   Cat: str = 'None',
                   Plaid_cat: str = 'None',
@@ -108,7 +108,7 @@ async def testing(request: Request,
                                       'Value_list': value_list})
 
 # Route that allows us to check the current values of the SQLite master table
-@router.get("/admin/db")
+@router.get("/admin/db", tags=["admin"])
 async def db(request: Request,
              username: str = Depends(get_current_username)):
     master = masterPull()
@@ -120,7 +120,7 @@ async def db(request: Request,
                                       'values': master})
 
 # Route that allows us to reset/create the users table
-@router.get("/admin/reset_user")
+@router.get("/admin/reset_user", tags=["admin"])
 async def user(request: Request,
                username: str = Depends(get_current_username)):
     resetUserTable()
@@ -130,7 +130,7 @@ async def user(request: Request,
                                       'message': message})
 
 # Route to display all changes in the change log table
-@router.get("/admin/changelog")
+@router.get("/admin/changelog", tags=["admin"])
 async def view_changes(request: Request,
                        username: str = Depends(get_current_username)):
     changes = masterChanges(recent = False)
