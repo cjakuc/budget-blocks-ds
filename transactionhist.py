@@ -135,10 +135,15 @@ class TransactionHistory(BaseModel):
         # totals['values'] = list(temp_totals.values())
         
 
-        totals =[]
-        for i in list(temp_totals.keys()):
-            totals.append({i: {'name': i, 'value': temp_totals[i]}})
+        # totals =[]
+        # for i in list(temp_totals.keys()):
+        #     totals.append({i: {'name': i, 'value': temp_totals[i]}})
 
+        totals = []
+        totals.append(list(temp_totals.keys()))
+        totals.append(list(temp_totals.values()))
+
+        
         temp_dict = {"transactions": transactions,
                     "user_id": self.user_id,
                     "totals": totals}
