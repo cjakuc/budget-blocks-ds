@@ -2,7 +2,7 @@
 
 ## Contributers
 | Adriann Lefebvere |
-| ----------------------------------------------------------------------------------------------------------- |
+|---|
 
 ## Setup (to test locally)
 * Clone this repo and cd into the directory
