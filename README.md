@@ -10,4 +10,4 @@
 The data science api was created with fastAPI and was deployed to AWS Elastic Beanstalk
 
 ## API Documentation
-The API documentation can be found in the deployed version of the api [here](https://api.budgetblocks.org/, "API")
+The API documentation can be found in the deployed version of the api [here](https://api.budgetblocks.org/docs)
