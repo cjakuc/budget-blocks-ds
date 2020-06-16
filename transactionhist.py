@@ -130,10 +130,15 @@ class TransactionHistory(BaseModel):
                 raise HTTPException(status_code=500, detail=f"Contact the DS team: One of the categories from this list: {cat_list} is not accounted for")  
 
         # Putting the transactions back into the dict so match what was plugged in
-        totals = {}
-        totals['categories'] = list(temp_totals.keys())
-        totals['values'] = list(temp_totals.values())
+        # totals = {}
+        # totals['categories'] = list(temp_totals.keys())
+        # totals['values'] = list(temp_totals.values())
         
+
+        totals =[]
+        for i in list(temp_totals.keys()):
+            totals.append({i: {'name': i, 'value': temp_totals[i]}})
+
         temp_dict = {"transactions": transactions,
                     "user_id": self.user_id,
                     "totals": totals}
