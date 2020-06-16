@@ -3,7 +3,7 @@
 ## Contributers
 
 | Adriann Lefebvere | -- | Christopher Jakuc |
-|:--:| :--:|
+|:--:|:--:|:--:|
 
 ## Local Setup
 * Clone this repo and cd into the directory
