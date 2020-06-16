@@ -1,7 +1,7 @@
 # Budget Blocks DS API
 
 ## Contributers
-| Adriann Lefebvere |
+Adriann Lefebvere 
 |---|
 
 ## Setup (to test locally)
