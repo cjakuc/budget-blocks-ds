@@ -4,9 +4,8 @@
 
 Adriann Lefebvere 
 | --- |
-<img src="https://media-exp1.licdn.com/dms/image/C5603AQHnWP2pLXNElA/profile-displayphoto-shrink_200_200/0?e=1597881600&v=beta&t=4mkgFZn0Ny3TO2vC6IA0atRSJNjrhA1OstP0kSkDdtc" width=100>
-| --- |
-[<img src="https://image.flaticon.com/icons/svg/25/25231.svg" width=25>](https://github.com/aklefebvere)
+| <img src="https://media-exp1.licdn.com/dms/image/C5603AQHnWP2pLXNElA/profile-displayphoto-shrink_200_200/0?e=1597881600&v=beta&t=4mkgFZn0Ny3TO2vC6IA0atRSJNjrhA1OstP0kSkDdtc" width=100> |
+| [<img src="https://image.flaticon.com/icons/svg/25/25231.svg" width=25>](https://github.com/aklefebvere) |
 
 ## Setup (to test locally)
 * Clone this repo and cd into the directory
