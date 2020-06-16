@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from fastapi import HTTPException
 from pydantic import BaseModel
 
-def reCatHelper(trans: dict, newCat: str, totals: dict):
+def reCatHelper(trans: dict, newCat: str, temp_totals: dict):
     """
     Helper function to retitle the Plaid categories from 'category' to 'plaid_category' and add a single budget blocks category, 'budget_blocks_category'
     Parameters: a JSON object for a single transaction and the desired new budget blocks category
@@ -17,7 +17,7 @@ def reCatHelper(trans: dict, newCat: str, totals: dict):
     trans['budget_blocks_category'].append(newCat)
 
     # Increment totals
-    totals[newCat] += trans['amount']
+    temp_totals[newCat] += trans['amount']
      
     return trans
 
@@ -85,10 +85,10 @@ class TransactionHistory(BaseModel):
         """
         transactions = self.transactions
         # Dictionary to store the totals of each BB category
-        totals = {}
+        temp_totals = {}
         # Create a key in totals for each BB category so we can do += later
         for cat in list(cats_dict.keys()):
-            totals[cat] = 0
+            temp_totals[cat] = 0
 
         # Index into each transaction dict
         for trans in transactions:
@@ -102,9 +102,9 @@ class TransactionHistory(BaseModel):
             
             # Cash Advance is the only Plaid main category with no sub categories, and they all are remapped to "Income"
             if (numb_of_cats == 1) & (cat_list == ["Cash Advance"]):
-                trans = reCatHelper(trans, "Income", totals)
+                trans = reCatHelper(trans, "Income", temp_totals)
             elif (numb_of_cats == 1) & (cat_list == ["Payment"]):
-                trans = reCatHelper(trans, "Debt", totals)
+                trans = reCatHelper(trans, "Debt", temp_totals)
             elif (numb_of_cats == 1) & (cat_list != ["Cash Advance"] or cat_list != ['Payment']):
                 raise HTTPException(status_code=500, detail=f"Contact the DS team: There was only a single category, {cat_list}, and it was not Cash Advance")
 
@@ -122,7 +122,7 @@ class TransactionHistory(BaseModel):
                             if dupl_test >= 2:
                                 raise HTTPException(status_code=500, detail=f"Contact the DS team: A cat_list, {cat_list_sliced}, is in two or more cat_dicts lists, {trans['transactions'][0]['category'][0]} and {key}")
 
-                            trans = reCatHelper(trans, key, totals)
+                            trans = reCatHelper(trans, key, temp_totals)
 
             # Custom error exception to tell us if there is a plaid category we didn't account for
                 # Transportation is the only case where Plaid cat == Budget Blocks cat
@@ -130,6 +130,9 @@ class TransactionHistory(BaseModel):
                 raise HTTPException(status_code=500, detail=f"Contact the DS team: One of the categories from this list: {cat_list} is not accounted for")  
 
         # Putting the transactions back into the dict so match what was plugged in
+        totals['categories'] = list(temp_totals.keys())
+        totals['values'] = list(temp_totals.values())
+        
         temp_dict = {"transactions": transactions,
                     "user_id": self.user_id,
                     "totals": totals}
