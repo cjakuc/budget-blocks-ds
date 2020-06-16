@@ -2,7 +2,7 @@
 
 ## Contributers
 
-| Adriann Lefebvere | Christopher Jakuc |
+| Adriann Lefebvere | -- | Christopher Jakuc |
 |:--:| :--:|
 
 ## Local Setup
