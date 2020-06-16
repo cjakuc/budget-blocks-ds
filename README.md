@@ -4,6 +4,7 @@
 
 Adriann Lefebvere 
 | --- |
+[<img src="https://image.flaticon.com/icons/svg/25/25231.svg" width=100>(https://github.com/aklefebvere) |
 
 ## Setup (to test locally)
 * Clone this repo and cd into the directory
