@@ -23,5 +23,7 @@ Framework: FastAPI
 
 Deployment: AWS Elastic Beanstalk
 
+Database: PostgreSQL hosted with ElephantSQL
+
 ## API Documentation
 The API documentation can be found in the deployed version of the API [here](https://api.budgetblocks.org/docs)
