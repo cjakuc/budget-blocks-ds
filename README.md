@@ -5,7 +5,6 @@
 | Adriann Lefebvere | Christopher Jakuc |
 |:--:|:--:|
 | <img src="https://media-exp1.licdn.com/dms/image/C5603AQHnWP2pLXNElA/profile-displayphoto-shrink_200_200/0?e=1597881600&v=beta&t=4mkgFZn0Ny3TO2vC6IA0atRSJNjrhA1OstP0kSkDdtc" width=200> | <img src="https://media-exp1.licdn.com/dms/image/C5603AQF1rn6d_fEWRQ/profile-displayphoto-shrink_200_200/0?e=1597881600&v=beta&t=5_hQV3iFj87RiQZzLMr76c7G63yL8O4PI29KeBsgbqw" width=200> |
-|:--:|:--:|
 
 ## Local Setup
 * Clone this repo and cd into the directory
