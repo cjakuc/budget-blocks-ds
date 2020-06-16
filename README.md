@@ -16,7 +16,7 @@ Future web team members: If you have any problems with our API or have any quest
 * Clone this repo and cd into the directory
 * `pipenv install` to create the pip enviroment
 * `pipenv shell` to enter the pip enviroment
-* Type `uvicorn main:app --reload` to run the server locally
+* `uvicorn main:app --reload` to run the server locally
 
 ## Tech Stack
 Languages: Python, SQL, HTML
