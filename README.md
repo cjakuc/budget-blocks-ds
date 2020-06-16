@@ -1,5 +1,8 @@
 # Budget Blocks DS API
 
+## Contributers
+| Adriann Lefebvere |
+
 ## Setup (to test locally)
 * Clone this repo and cd into the directory
 * `pipenv install` to create the pip enviroment
