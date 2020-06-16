@@ -1,1 +1,31 @@
-# budget--blocks
+# Budget Blocks DS API
+[Web Front-end](https://www.budgetblocks.org/)
+
+[DS API](https://api.budgetblocks.org/)
+
+## Contributers
+
+| Adriann Lefebvere | Christopher Jakuc |
+|:--:|:--:|
+| <img src="https://media-exp1.licdn.com/dms/image/C5603AQHnWP2pLXNElA/profile-displayphoto-shrink_200_200/0?e=1597881600&v=beta&t=4mkgFZn0Ny3TO2vC6IA0atRSJNjrhA1OstP0kSkDdtc" width=200> | <img src="https://media-exp1.licdn.com/dms/image/C5603AQF1rn6d_fEWRQ/profile-displayphoto-shrink_200_200/0?e=1597881600&v=beta&t=5_hQV3iFj87RiQZzLMr76c7G63yL8O4PI29KeBsgbqw" width=200> |
+| [<img src="https://image.flaticon.com/icons/svg/25/25231.svg" width=25>](https://github.com/aklefebvere) [<img src = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.shareicon.net%2Fdata%2F2017%2F06%2F30%2F888065_logo_512x512.png&f=1&nofb=1" width=27>](https://www.linkedin.com/in/adriann-lefebvere-6571761a3/) | [<img src="https://image.flaticon.com/icons/svg/25/25231.svg" width=25>](https://github.com/cjakuc) [<img src = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.shareicon.net%2Fdata%2F2017%2F06%2F30%2F888065_logo_512x512.png&f=1&nofb=1" width=27>](https://www.linkedin.com/in/chrisjakuc/) |
+
+Future web team members: If you have any problems with our API or have any questions, you can contact either of us via Slack and we will help troubleshoot/answer any questions.
+
+## Local Setup
+* Clone this repo and cd into the directory
+* `pipenv install` to create the pip enviroment
+* `pipenv shell` to enter the pip enviroment
+* `uvicorn main:app --reload` to run the server locally
+
+## Tech Stack
+Languages: Python, SQL, HTML
+
+Framework: FastAPI
+
+Deployment: AWS Elastic Beanstalk
+
+Database: PostgreSQL hosted with ElephantSQL
+
+## API Documentation
+The API documentation can be found in the deployed version of the API [here](https://api.budgetblocks.org/docs)
