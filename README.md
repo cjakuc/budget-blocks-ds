@@ -1,9 +1,9 @@
 # Budget Blocks DS API
 
 ## Contributers
-
-Adriann Lefebvere 
 ---
+Adriann Lefebvere 
+
 
 ## Setup (to test locally)
 * Clone this repo and cd into the directory
