@@ -1,4 +1,7 @@
 # Budget Blocks DS API
+[Web Front-end](https://www.budgetblocks.org/)
+
+[DS API](api.budgetblocks.org/)
 
 ## Contributers
 
@@ -13,8 +16,12 @@
 * `pipenv shell` to enter the pip enviroment
 * Type `uvicorn main:app --reload` to run the server locally
 
-## API Framework and Deployment
-The data science api was created with fastAPI and was deployed to AWS Elastic Beanstalk
+## Tech Stack
+Languages: Python, SQL, HTML
+
+Framework: FastAPI
+
+Deployment: AWS Elastic Beanstalk
 
 ## API Documentation
-The API documentation can be found in the deployed version of the api [here](https://api.budgetblocks.org/docs)
+The API documentation can be found in the deployed version of the API [here](https://api.budgetblocks.org/docs)
