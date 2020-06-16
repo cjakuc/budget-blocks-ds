@@ -1,7 +1,7 @@
 # Budget Blocks DS API
 [Web Front-end](https://www.budgetblocks.org/)
 
-[DS API](api.budgetblocks.org/)
+[DS API](https://api.budgetblocks.org/)
 
 ## Contributers
 
