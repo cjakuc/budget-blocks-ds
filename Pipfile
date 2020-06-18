@@ -14,6 +14,7 @@ fastapi = "*"
 gunicorn = "*"
 python-dotenv = "*"
 jinja2 = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.7"
