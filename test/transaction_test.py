@@ -1,14 +1,14 @@
-import sys, os
+from census import *
+from transactionhist import *
+from DB.masterDB import *
+from DB.userDB import *
+import unittest
+import sys
+import os
 
 # pytest -m test was alternative solution
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + '/../')
-
-import unittest
-from DB.userDB import *
-from DB.masterDB import *
-from transactionhist import *
-from census import *
 
 
 class TestTransactions(unittest.TestCase):
@@ -17,31 +17,35 @@ class TestTransactions(unittest.TestCase):
         trans = TransactionHistory.Config.schema_extra['example']['transactions']
 
         user_id = 42
-        trans_object = TransactionHistory(transactions = trans, user_id = user_id)
+        trans_object = TransactionHistory(transactions=trans, user_id=user_id)
 
         recats = trans_object.getCats(cats_dict=masterPull())
 
         expected_totals = {
-                "Personal": 0,
-                "Food": 0,
-                "Debt": 25,
-                "Income": 0,
-                "Giving": 0,
-                "Housing": 0,
-                "Transportation": 0,
-                "Transfer": 0,
-                "Savings": 0
-            }
+            "Personal": 0,
+            "Food": 0,
+            "Debt": 25,
+            "Income": 0,
+            "Giving": 0,
+            "Housing": 0,
+            "Transportation": 0,
+            "Transfer": 0,
+            "Savings": 0
+        }
 
         self.assertEqual(recats['totals'], expected_totals)
         self.assertEqual(recats['user_id'], user_id)
-        self.assertEqual(recats["transactions"][0]['plaid_category'],  ["Payment","Credit Card"])
-        self.assertEqual(recats["transactions"][0]['budget_blocks_category'], ["Debt"])        
+        self.assertEqual(
+            recats["transactions"][0]['plaid_category'], [
+                "Payment", "Credit Card"])
+        self.assertEqual(recats["transactions"][0]
+                         ['budget_blocks_category'], ["Debt"])
+
 
 class TestCensus(unittest.TestCase):
     def test_census(self):
         user_id = 42
-        census = Census(location = ['Sea Girt', 'NJ'], user_id = user_id)
+        census = Census(location=['Sea Girt', 'NJ'], user_id=user_id)
         census_totals = census.census_totals(user_dict=masterPull())
 
         # If master is in factory default
@@ -56,9 +60,10 @@ class TestCensus(unittest.TestCase):
             "Transportation": 707.75,
             "Transfer": 0,
             "Savings": 0
-            }
+        }
 
         self.assertEqual(census_totals, expected_census)
+
 
 if __name__ == '__main__':
     unittest.main()

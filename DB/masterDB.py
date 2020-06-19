@@ -19,15 +19,14 @@ AUSER = os.getenv("AUSER", default="OOPS")
 DBPASSWORD = os.getenv("DBPASSWORD", default="OOPS")
 HOST = os.getenv("HOST", default="OOPS")
 
+
 def resetMaster():
     """
-    Function to create master table to store default categorization preferences
+    Function to reset/create master table to store default categorization preferences
             Creates an "old" and a "new" table that are identical except for the value of is_old
     Inputs: None
     Output: None
     """
-    # Create the Connection object to the 'BudgetBlocks' DB
-    # conn = sql.connect('BudgetBlocks.db')
     conn = psycopg2.connect(dbname=DBNAME, user=AUSER,
                             password=DBPASSWORD, host=HOST)
 
@@ -39,7 +38,7 @@ def resetMaster():
     DROP TABLE IF EXISTS master
     """)
 
-    #Delete the changelogs table
+    # Delete the changelogs table
     c.execute("""
     DROP TABLE IF EXISTS changelog
     """)
@@ -50,21 +49,21 @@ def resetMaster():
     (Key TEXT,
     PLAID_Values TEXT,
     is_old BOOLEAN)
-    """)    
+    """)
 
     # Check if table is empty
     empty_query = """
     SELECT count(*)
     FROM master
     """
-    
+
     # "New" default entries in master table
-    dict_to_sql(current_dict = cats_dict, is_master = True, 
-                    is_old_custom = True, c = c)
+    dict_to_sql(current_dict=cats_dict, is_master=True,
+                is_old_custom=True, c=c)
 
     # "Old" default entries in master table
-    dict_to_sql(current_dict = cats_dict, is_master = True, 
-                    is_old_custom = False, c = c)
+    dict_to_sql(current_dict=cats_dict, is_master=True,
+                is_old_custom=False, c=c)
 
     # commit changes (if any)
     conn.commit()
@@ -75,11 +74,12 @@ def resetMaster():
 
     return 0
 
+
 def masterPull():
     """
-    Function to pull the default categorization preferences from the database and return them in the proper format
-    Inputs: Boolean variable old controls whether you pull the most up to date dict or the old version
-    Outputs: Dictionary of default categorization preferences where each key is a Budget Blocks category and the values are 
+    Function to pull the default categorization preferences from the database and return them in a properly formatted dictionary
+    Inputs: None
+    Outputs: Dictionary of default categorization preferences where each key is a Budget Blocks category and the values are
              the Plaid categories that belong to the Budget Block categories
     """
     # Create the Connection object to the 'BudgetBlocks' DB
@@ -92,9 +92,10 @@ def masterPull():
     # Query the master table for the keys and save them to val
     query1 = "SELECT Key from master WHERE is_old is FALSE"
 
-    # Query the master table for the strings that contain the lists of values separated by '/'
+    # Query the master table for the strings that contain the lists of values
+    # separated by '/'
     query2 = "SELECT PLAID_Values from master WHERE is_old is FALSE"
-    new_dict = sql_to_dict(query1 = query1, query2 = query2, c = c)
+    new_dict = sql_to_dict(query1=query1, query2=query2, c=c)
 
     # commit changes (if any)
     conn.commit()
@@ -103,6 +104,7 @@ def masterPull():
 
     # Return the new dictionary
     return new_dict
+
 
 def updateMaster(old_cat, plaid_cat, destination):
     """
@@ -128,7 +130,8 @@ def updateMaster(old_cat, plaid_cat, destination):
 
     # Exception for if plaid_cats is not in old_BB
     if plaid_cat not in new_dict[old_cat]:
-        raise HTTPException(status_code=500, detail=f"{plaid_cat} is not in {old_cat}")
+        raise HTTPException(status_code=500,
+                            detail=f"{plaid_cat} is not in {old_cat}")
 
     # Remove the plaid_cat from the old_cat's value list
     new_dict[old_cat].remove(plaid_cat)
@@ -160,10 +163,9 @@ def updateMaster(old_cat, plaid_cat, destination):
     c.execute(replace_query)
 
     # Insert the newly made cats as the new dict
-    dict_to_sql(current_dict = new_dict, is_master = True, 
-                is_old_custom = False, c = c)
+    dict_to_sql(current_dict=new_dict, is_master=True,
+                is_old_custom=False, c=c)
 
-    
     # commit changes (if any)
     conn.commit()
     # close connection
@@ -171,13 +173,16 @@ def updateMaster(old_cat, plaid_cat, destination):
 
     from DB.userDB import updateUsers
     updateUsers(new_dict)
-    
+
     return 0
 
 
 def updateChangeLog(plaid_cat, old_BB, new_BB):
     """
-    Function to store any changes to the master 
+    Function that updates the changelog table
+    Inputs: plaid_cat -  the plaid category that needs to be remapped
+          : old_BB - the old BB category of the plaid category that needs to be remapped
+          : new_BB - the new BB category of the plaid category
     """
     # Create the Connection object to the 'BudgetBlocks' DB
     conn = psycopg2.connect(dbname=DBNAME, user=AUSER,
@@ -187,24 +192,16 @@ def updateChangeLog(plaid_cat, old_BB, new_BB):
     c = conn.cursor()
 
     # Create table if it doesn't exist
-    c.execute("CREATE TABLE IF NOT EXISTS changelog(ID SERIAL PRIMARY KEY, Changes TEXT, Time TEXT);")
+    c.execute(
+        "CREATE TABLE IF NOT EXISTS changelog(ID SERIAL PRIMARY KEY, Changes TEXT, Time TEXT);")
 
     conn.commit()
 
     message = f"{plaid_cat} was moved from {old_BB} to {new_BB}"
 
-    # For whatever reason, when adding one column that's a string using the method we previous used it broke
-    # repr() gives the "official" string representation and fixes issues with extra quotes, we think? It works
-    # message = repr(message)
-
     # Get the current date and time to add to the change log
     current_time = str(datetime.datetime.now())
 
-    # insertion_query = f"""
-    # INSERT INTO changelog (Changes, Time)
-    # VALUES
-    # ({message})
-    # """
     insertion_query = f"""
     INSERT INTO changelog (Changes, Time)
     VALUES
@@ -219,10 +216,11 @@ def updateChangeLog(plaid_cat, old_BB, new_BB):
 
     return 0
 
+
 def masterChanges(recent: bool = True):
     """
     Function to get the 5 most recent changes, or all changes, in the change log table
-    Inputs: recent - boolean corresponding to whether you want the 5 most recent changes
+    Inputs: recent - boolean corresponding to whether you want the 5 most recent changes, default is True
     Outputs: List of tuples that has the 5 most recent entries in the change log table
     """
 
@@ -234,17 +232,20 @@ def masterChanges(recent: bool = True):
     c = conn.cursor()
 
     # Get the count of tables with the name "changelog"
-    c.execute("SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'changelog');")
+    c.execute(
+        "SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'changelog');")
 
     check = c.fetchall()[0][0]
 
     changes = []
-    #if the count is 0, then table does not exist, return that there are no changes
+    # if the count is 0, then table does not exist, return that there are no
+    # changes
     if check == False:
         changes.append("No changes to display")
         return changes
 
-    # If recent == True only get the 5 most recent changes, else get all of them
+    # If recent == True only get the 5 most recent changes, else get all of
+    # them
     if recent:
         query = """
         SELECT *
@@ -252,7 +253,7 @@ def masterChanges(recent: bool = True):
         ORDER BY id DESC
         LIMIT 5
         """
-        
+
     else:
         query = """
         SELECT *
@@ -266,8 +267,8 @@ def masterChanges(recent: bool = True):
 
     # Clean up the changes
     for i in temp:
-        changes.append([i[2],i[1].replace("_", " ")])
+        changes.append([i[2], i[1].replace("_", " ")])
 
     conn.close()
-        
+
     return changes

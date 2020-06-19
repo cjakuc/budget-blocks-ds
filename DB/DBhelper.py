@@ -1,7 +1,9 @@
 from fastapi import HTTPException
 import psycopg2
 
-def dict_to_sql(current_dict: dict, is_master: bool, is_old_custom: bool, c, user_id: int = None):
+
+def dict_to_sql(current_dict: dict, is_master: bool,
+                is_old_custom: bool, c, user_id: int = None):
     """
     Function to take a dictionary and write it to either the master or users tables
     Inputs: current_dict - The dictionary to input into the table
@@ -13,15 +15,17 @@ def dict_to_sql(current_dict: dict, is_master: bool, is_old_custom: bool, c, use
     """
     # Raise exception if is_old_custom != 0 or 1
     if (is_old_custom != False) & (is_old_custom != True):
-        raise HTTPException(status_code=500, detail=f"In dict_to_sql, is_old_custom was not 0 or 1")
-    
+        raise HTTPException(
+            status_code=500,
+            detail=f"In dict_to_sql, is_old_custom was not 0 or 1")
+
     if is_master:
         for key in list(current_dict.keys()):
             test = str(current_dict[key])
             test = test.replace('], [', '/')
-            test = test.replace('[[','')
-            test = test.replace(']]','')
-            test = test.replace("'","")
+            test = test.replace('[[', '')
+            test = test.replace(']]', '')
+            test = test.replace("'", "")
             insertion_query = f"""
             INSERT INTO master (Key, PLAID_Values, is_old)
             VALUES
@@ -31,15 +35,17 @@ def dict_to_sql(current_dict: dict, is_master: bool, is_old_custom: bool, c, use
 
     else:
         # Raise exception if is_master == 0 and user_id == None
-        if user_id == None:
-            raise HTTPException(status_code=500, detail=f"In dict_to_sql, no user_id was passed when is_master was 0")
+        if user_id is None:
+            raise HTTPException(
+                status_code=500,
+                detail=f"In dict_to_sql, no user_id was passed when is_master was 0")
 
         for key in list(current_dict.keys()):
             test = str(current_dict[key])
             test = test.replace('], [', '/')
-            test = test.replace('[[','')
-            test = test.replace(']]','')
-            test = test.replace("'","")
+            test = test.replace('[[', '')
+            test = test.replace(']]', '')
+            test = test.replace("'", "")
             insertion_query = f"""
             INSERT INTO users (user_id, Key, PLAID_Values, is_custom)
             VALUES
@@ -48,7 +54,8 @@ def dict_to_sql(current_dict: dict, is_master: bool, is_old_custom: bool, c, use
             c.execute(insertion_query)
 
     return 0
- 
+
+
 def sql_to_dict(query1: str, query2: str, c):
     """
     Function to convert SQL table into a dictionary
@@ -57,7 +64,6 @@ def sql_to_dict(query1: str, query2: str, c):
             c - cursor object
     Outputs: new_dict - dictionary of keys and values
     """
-    
 
     keys = []
 
@@ -72,16 +78,18 @@ def sql_to_dict(query1: str, query2: str, c):
     c.execute(query2)
 
     vals = c.fetchall()
-    # Iterate through the string values and do some splitting to turn them into the correct list of lists format
+    # Iterate through the string values and do some splitting to turn them
+    # into the correct list of lists format
     for i in vals:
         words = i[0]
-        words =  words.split('/')
+        words = words.split('/')
         for i in range(len(words)):
             words[i] = words[i].split(', ', 1)
-        
+
         values.append(words)
 
-    # Create a new dictionary and populate it with the keys and values we've extracted and formatted
+    # Create a new dictionary and populate it with the keys and values we've
+    # extracted and formatted
     new_dict = {}
     for i, key in enumerate(keys):
         new_dict[key] = values[i]

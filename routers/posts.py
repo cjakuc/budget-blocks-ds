@@ -6,7 +6,8 @@ import time
 
 router = APIRouter()
 
-# End point for the web backend to send transaction history objects and get back the same object w/ BB categories
+# End point for the web backend to send transaction history objects and
+# get back the same object w/ BB categories
 @router.post("/transaction/", tags=["transaction"])
 def transaction(trans: TransactionHistory):
     start_time = time.time()
@@ -19,10 +20,6 @@ def transaction(trans: TransactionHistory):
 
     # Recategorize the transactions
     request = trans.getCats(cats_dict=getUser(user_id))
-    # request = trans.getCats(cats_dict=user_dict)
-
-    # Retreive the census info for the right location and append it to the transactions JSON. Return it
-    # request = census_totals(transactions=transactions, location=full_dict['location'], user_dict=user_dict)
 
     print("--- %s seconds ---" % (time.time() - start_time))
 
@@ -30,17 +27,24 @@ def transaction(trans: TransactionHistory):
 
     return request
 
+# End point for the web team to send a user's location and user id, and
+# receive the average census expenditures of people in the nearest city
 @router.post("/census", tags=["census"])
 async def user_census(census: Census):
 
+    # Get the user ID
     user_id = census.user_id
 
+    # Get the user's preferences
     user_dict = getUser(user_id)
 
+    # Create the personalized census dictionary
     personalized_census = census.census_totals(user_dict=user_dict)
 
     return personalized_census
 
+# End point for the web team to edit a user's preferences by switching a
+# specific plaid category from one BB category to another
 @router.post("/update_users", tags=["update_users"])
 async def update_users(update: UpdatePreferences):
     new = update.changePreferences()
@@ -48,31 +52,28 @@ async def update_users(update: UpdatePreferences):
         message = "Updated preferences successfully"
     return({"message": message})
 
+# Test version of the transaction endpoint where "Income" is a seperate
+# key from the rest of the totals
+# @router.post("/transaction_test/", tags=["transaction"])
+# def transaction(trans: TransactionHistory):
+#     start_time = time.time()
 
+#     # Get the user ID
+#     user_id = trans.user_id
 
-@router.post("/transaction_test/", tags=["transaction"])
-def transaction(trans: TransactionHistory):
-    start_time = time.time()
+#     # Get user preferences
+#     user_dict = getUser(user_id)
 
-    # Get the user ID
-    user_id = trans.user_id
+#     # Recategorize the transactions
+#     request = trans.getCats(cats_dict=getUser(user_id))
 
-    # Get user preferences
-    user_dict = getUser(user_id)
+#     # Create a new seperate key for income to test Adam's solution and delete
+#     # the old one
+#     request['Income'] = request['totals']['Income']
+#     del request['totals']['Income']
 
-    # Recategorize the transactions
-    request = trans.getCats(cats_dict=getUser(user_id))
-    # request = trans.getCats(cats_dict=user_dict)
+#     print("--- %s seconds ---" % (time.time() - start_time))
 
-    # Create a new seperate key for income to test Adam's solution
-    request['Income'] = request['totals']['Income']
-    del request['totals']['Income']
+#     request['request time in seconds'] = (time.time() - start_time)
 
-    # Retreive the census info for the right location and append it to the transactions JSON. Return it
-    # request = census_totals(transactions=transactions, location=full_dict['location'], user_dict=user_dict)
-
-    print("--- %s seconds ---" % (time.time() - start_time))
-
-    request['request time in seconds'] = (time.time() - start_time)
-
-    return request
+#     return request
