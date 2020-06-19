@@ -21,8 +21,8 @@ templates = Jinja2Templates(directory="templates")
 security = HTTPBasic()
 
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security), tags=["admin"]):
-    correct_username = secrets.compare_digest(credentials.username, AUSERNAME)
-    correct_password = secrets.compare_digest(credentials.password, PASSWORD)
+    correct_username = secrets.compare_digest(credentials.username, "test")
+    correct_password = secrets.compare_digest(credentials.password, "test")
     if not (correct_username and correct_password):
         raise HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,

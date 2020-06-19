@@ -47,3 +47,32 @@ async def update_users(update: UpdatePreferences):
     if new == 0:
         message = "Updated preferences successfully"
     return({"message": message})
+
+
+
+@router.post("/transaction_test/", tags=["transaction"])
+def transaction(trans: TransactionHistory):
+    start_time = time.time()
+
+    # Get the user ID
+    user_id = trans.user_id
+
+    # Get user preferences
+    user_dict = getUser(user_id)
+
+    # Recategorize the transactions
+    request = trans.getCats(cats_dict=getUser(user_id))
+    # request = trans.getCats(cats_dict=user_dict)
+
+    # Create a new seperate key for income to test Adam's solution
+    request['Income'] = request['totals']['Income']
+    del request['totals']['Income']
+
+    # Retreive the census info for the right location and append it to the transactions JSON. Return it
+    # request = census_totals(transactions=transactions, location=full_dict['location'], user_dict=user_dict)
+
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+    request['request time in seconds'] = (time.time() - start_time)
+
+    return request

@@ -29,8 +29,8 @@ class TestTransactions(unittest.TestCase):
                 "Giving": 0,
                 "Housing": 0,
                 "Transportation": 0,
-                "transfer": 0,
-                "savings": 0
+                "Transfer": 0,
+                "Savings": 0
             }
 
         self.assertEqual(recats['totals'], expected_totals)
@@ -54,8 +54,8 @@ class TestCensus(unittest.TestCase):
             "Giving": 125.66666666666667,
             "Housing": 1950.5833333333335,
             "Transportation": 707.75,
-            "transfer": 0,
-            "savings": 0
+            "Transfer": 0,
+            "Savings": 0
             }
 
         self.assertEqual(census_totals, expected_census)
