@@ -153,7 +153,7 @@ The API documentation can be found in the deployed version of the API [here](htt
 
 ### /admin routes
 
-<img src="https://i.gyazo.com/68dfce0ec1ef3ea7dc1c24fbbf7506ea.gif" width=650>
+<img src="https://i.gyazo.com/68dfce0ec1ef3ea7dc1c24fbbf7506ea.gif" width=750>
 
 * `/admin` is a route to all the admin routes to our API
   * Login information will be stored in the PVD
@@ -161,6 +161,9 @@ The API documentation can be found in the deployed version of the API [here](htt
 * `/admin/reset_user` and `/admin/reset_master` will completely wipe all changed data that was created and will set everything back to "factory defaults"
   * There is a conformation if you are accessing the `/reset_master` or `/reset_user` through the admin panel just in case you click on it by accident.
   
+<img src="https://i.gyazo.com/fb1502198593c6aae3f8019ad98c2e06.gif" width=750>  
+
 * when using `/admin/edit_master` the separate plaid categories are noted by the word `AND` in all caps.
   * example: `Bar AND Sports Bar`; `Sports Bar` is a sub category of `Bar` in PLAID.
  
+<img src="https://i.gyazo.com/a2321c05d72d89eb1745b7724f20322a.gif" width=750>
