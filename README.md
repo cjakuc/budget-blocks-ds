@@ -1,6 +1,6 @@
 # Budget Blocks DS API
 
-<img src="/icon_with_name.png" width=500>
+<img src="/budget_blocks_icon.png" width=500>
 
 [Web Front-end](https://www.budgetblocks.org/)
 
