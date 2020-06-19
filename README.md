@@ -1,4 +1,4 @@
-<img src="/budget_blocks_icon.png" width=500>
+<img src="/budget_blocks_logo_color.png" width=500>
 
 # Budget Blocks DS API
 
