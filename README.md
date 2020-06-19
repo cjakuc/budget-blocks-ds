@@ -162,5 +162,5 @@ The API documentation can be found in the deployed version of the API [here](htt
   * There is a conformation if you are accessing the `/reset_master` or `/reset_user` through the admin panel just in case you click on it by accident.
   
 * when using `/admin/edit_master` the separate plaid categories are noted by the word `AND` in all caps.
-  * example: `Bar AND Sports Bar`, `Sports Bar` is a sub category of `Bar` in PLAID.
+  * example: `Bar AND Sports Bar`; `Sports Bar` is a sub category of `Bar` in PLAID.
  
