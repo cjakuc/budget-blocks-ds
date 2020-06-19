@@ -237,3 +237,51 @@ class UpdatePreferences(BaseModel):
         conn.close()
 
         return 0
+
+class User(BaseModel):
+    user_id: int
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "user_id": 1
+            }
+        }
+    
+    def reset_user_cats(self):
+        conn = psycopg2.connect(dbname=DBNAME, user=AUSER,
+                                password=DBPASSWORD, host=HOST)
+
+        c = conn.cursor()
+
+        delete_query = f"""
+        DELETE
+        FROM users
+        WHERE user_id = {self.user_id}
+        """
+        c.execute(delete_query)
+
+        current_dict = masterPull()
+        dict_to_sql(current_dict=current_dict, is_master=False,
+                    is_old_custom=False, c=c, user_id=self.user_id)
+
+        conn.commit()
+        conn.close()
+
+        return f"User {self.user_id} categorical preferences have been reset!"
+    
+    def delete_user(self):
+        conn = psycopg2.connect(dbname=DBNAME, user=AUSER,
+                                password=DBPASSWORD, host=HOST)
+
+        c = conn.cursor()
+
+        delete_query = f"""
+        DELETE
+        FROM users
+        WHERE user_id = {self.user_id}
+        """
+        c.execute(delete_query)
+        conn.commit()
+        conn.close()
+        return f"User {self.user_id} has been deleted"

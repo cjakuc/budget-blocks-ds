@@ -52,28 +52,39 @@ async def update_users(update: UpdatePreferences):
         message = "Updated preferences successfully"
     return({"message": message})
 
-# Test version of the transaction endpoint where "Income" is a seperate
-# key from the rest of the totals
-# @router.post("/transaction_test/", tags=["transaction"])
-# def transaction(trans: TransactionHistory):
-#     start_time = time.time()
+# Test version of the transaction endpoint where "Income" is a seperate key from the rest of the totals
+@router.post("/transaction_test/", tags=["transaction"])
+def transaction(trans: TransactionHistory):
+    start_time = time.time()
 
-#     # Get the user ID
-#     user_id = trans.user_id
+    # Get the user ID
+    user_id = trans.user_id
 
-#     # Get user preferences
-#     user_dict = getUser(user_id)
+    # Get user preferences
+    user_dict = getUser(user_id)
 
-#     # Recategorize the transactions
-#     request = trans.getCats(cats_dict=getUser(user_id))
+    # Recategorize the transactions
+    request = trans.getCats(cats_dict=getUser(user_id))
 
-#     # Create a new seperate key for income to test Adam's solution and delete
-#     # the old one
-#     request['Income'] = request['totals']['Income']
-#     del request['totals']['Income']
+    # Create a new seperate key for income to test Adam's solution and delete
+    # the old one
+    request['Income'] = request['totals']['Income']
+    del request['totals']['Income']
 
-#     print("--- %s seconds ---" % (time.time() - start_time))
+    print("--- %s seconds ---" % (time.time() - start_time))
 
-#     request['request time in seconds'] = (time.time() - start_time)
+    request['request time in seconds'] = (time.time() - start_time)
 
-#     return request
+    return request
+
+@router.post("/reset_user", tags=['reset_user'])
+def reset_user(user: User):
+    message = user.reset_user_cats()
+
+    return({"message": message})
+
+@router.post("/delete_user", tags=['delete_user'])
+def delete_user(user: User):
+    message = user.delete_user()
+
+    return({"message": message})

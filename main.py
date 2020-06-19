@@ -29,6 +29,14 @@ tags_metadata = [
     {
         "name": "Admin",
         "description": "Admin interface routes; accessible upon login through api.budgetblocks.org/admin"
+    },
+    {
+        "name": "reset_user",
+        "description": "Remove a user's custom preferences and replace them with the current defaults"
+    },
+    {
+        "name": "delete_user",
+        "description": "Delete a user from the user table"
     }
 ]
 
