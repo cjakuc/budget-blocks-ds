@@ -1,4 +1,7 @@
 # Budget Blocks DS API
+
+<img src="/icon_with_name.svg" width=500>
+
 [Web Front-end](https://www.budgetblocks.org/)
 
 [DS API](https://api.budgetblocks.org/)
