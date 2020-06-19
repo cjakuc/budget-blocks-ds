@@ -13,7 +13,7 @@
 | <img src="https://media-exp1.licdn.com/dms/image/C5603AQHnWP2pLXNElA/profile-displayphoto-shrink_200_200/0?e=1597881600&v=beta&t=4mkgFZn0Ny3TO2vC6IA0atRSJNjrhA1OstP0kSkDdtc" width=200> | <img src="https://media-exp1.licdn.com/dms/image/C5603AQF1rn6d_fEWRQ/profile-displayphoto-shrink_200_200/0?e=1597881600&v=beta&t=5_hQV3iFj87RiQZzLMr76c7G63yL8O4PI29KeBsgbqw" width=200> |
 | [<img src="https://image.flaticon.com/icons/svg/25/25231.svg" width=25>](https://github.com/aklefebvere) [<img src = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.shareicon.net%2Fdata%2F2017%2F06%2F30%2F888065_logo_512x512.png&f=1&nofb=1" width=27>](https://www.linkedin.com/in/adriann-lefebvere-6571761a3/) | [<img src="https://image.flaticon.com/icons/svg/25/25231.svg" width=25>](https://github.com/cjakuc) [<img src = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.shareicon.net%2Fdata%2F2017%2F06%2F30%2F888065_logo_512x512.png&f=1&nofb=1" width=27>](https://www.linkedin.com/in/chrisjakuc/) |
 
-Future web team members: If you have any problems with our API or have any questions, you can contact either of us via Slack and we will help troubleshoot/answer any questions.
+Future web team members: If you have any problems with our API or have any questions, you can contact either of us via Slack or LinkeIn and we will help troubleshoot/answer any questions.
 
 ## Local Setup
 * Clone this repo and cd into the directory
@@ -43,7 +43,7 @@ The API documentation can be found in the deployed version of the API [here](htt
 
   * Specifically, the "transactions" key from the transaction object from the PLAID API
 
-* specifying the `user_id` key tells the API to use that user's categorical preferences.
+* Specifying the `user_id` key tells the API to use that user's categorical preferences.
   * If a `user_id` doesn't exist in the database, the API creates the user in the users table and gives that user the default budget blocks categories.
 
 * Example response:
@@ -135,13 +135,13 @@ The API documentation can be found in the deployed version of the API [here](htt
 ```
 
 ### /update_users
-* `Plaid_cats` is needed so the API knows what PLAID category it's going to be moving.
+* `Plaid_cats` is needed so the API knows which PLAID category it's going to be moving.
 
 * `old_BB` is the current location of the PLAID category which is the value of the key `Plaid_cats`
 
 * `new_BB` is the location where that user wants to move that PLAID category to.
 
-* specifying the `user_id` will re-categorize a specific transaction for just that user.
+* Specifying the `user_id` will re-categorize a specific transaction for just that user.
   * __When the user has changed a transaction category, that user will not get the latest updates from the master categories if they are changed__
 
 * Example response:
@@ -158,12 +158,12 @@ The API documentation can be found in the deployed version of the API [here](htt
 * `/admin` is a route to all the admin routes to our API
   * Login information will be stored in the PVD
 
-* `/admin/reset_user` and `/admin/reset_master` will completely wipe all changed data that was created and will set everything back to "factory defaults"
+* `/admin/reset_user` and `/admin/reset_master` will completely wipe all changes and will set everything back to "factory defaults"
   * There is a conformation if you are accessing the `/reset_master` or `/reset_user` through the admin panel just in case you click on it by accident.
   
 <img src="https://i.gyazo.com/fb1502198593c6aae3f8019ad98c2e06.gif" width=750>  
 
-* when using `/admin/edit_master` the separate plaid categories are noted by the word `AND` in all caps.
-  * example: `Bar AND Sports Bar`; `Sports Bar` is a sub category of `Bar` in PLAID.
+* When using `/admin/edit_master` the separate plaid categories are noted by the word `AND` in all caps.
+  * Example: `Bar AND Sports Bar`; `Sports Bar` is a sub category of `Bar` in PLAID.
  
 <img src="https://i.gyazo.com/a2321c05d72d89eb1745b7724f20322a.gif" width=750>
