@@ -150,6 +150,17 @@ The API documentation can be found in the deployed version of the API [here](htt
   "message": "Updated preferences successfully"
 }
 ```
+### /reset_user
+* Resets a user's categorical preferencesvia their `user_id`
+
+* Can be used if the user wants the latest update from the master categories if they want to __overwrite their custom categories__
+
+### /delete_user
+* Deletes a user from the database if that `user_id` exists in the database
+
+* Deleting a user and using requests such as `/reset_user` and `/update_users` will throw an internal error since the user does not exists in the user DB.
+ * A user can be re-created if the transactions from the deleted user were ran through the `/transaction` post request again.
+ * If the user that was deleted had custom categories and was re-created using `/transactions`, the user will be given the default master categories.
 
 ### /admin routes
 
