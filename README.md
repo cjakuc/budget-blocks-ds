@@ -130,7 +130,7 @@ The API documentation can be found in the deployed version of the API [here](htt
   "Housing": 1950.5833333333335,
   "Transportation": 707.75,
   "Transfer": 0,
-  "Savings": 0
+  "Savings": 2595.666666666666
 }
 ```
 
