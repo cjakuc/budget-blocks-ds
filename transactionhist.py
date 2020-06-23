@@ -147,4 +147,12 @@ class TransactionHistory(BaseModel):
                      "user_id": self.user_id,
                      "totals": temp_totals}
 
+        # Make savings equal to the income minus all of the spending
+        total_spending = 0
+        for key in list(temp_totals.keys()):
+            if (key != "Income") & (key != "Savings"):
+                total_spending += temp_totals[key]
+
+        temp_totals["Savings"] = abs(temp_totals["Income"]) - total_spending
+
         return temp_dict

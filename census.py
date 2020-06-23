@@ -124,4 +124,12 @@ class Census(BaseModel):
                                 personalized_census[i] += (census[key]
                                                            [region][closest_city] / 12)
 
+        # Make savings equal to the income minus all of the spending
+        total_spending = 0
+        for key in list(personalized_census.keys()):
+            if (key != "Income") & (key != "Savings") & (key != "City"):
+                total_spending += personalized_census[key]
+
+        personalized_census["Savings"] = abs(personalized_census["Income"]) - total_spending
+
         return personalized_census

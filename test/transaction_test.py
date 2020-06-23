@@ -1,7 +1,3 @@
-from census import *
-from transactionhist import *
-from DB.masterDB import *
-from DB.userDB import *
 import unittest
 import sys
 import os
@@ -9,6 +5,11 @@ import os
 # pytest -m test was alternative solution
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + '/../')
+
+from census import *
+from transactionhist import *
+from DB.masterDB import *
+from DB.userDB import *
 
 
 class TestTransactions(unittest.TestCase):
