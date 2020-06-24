@@ -177,4 +177,4 @@ The API documentation can be found in the deployed version of the API [here](htt
 * When using `/admin/edit_master` the separate plaid categories are noted by the word `AND` in all caps.
   * Example: `Bar AND Sports Bar`; `Sports Bar` is a sub category of `Bar` in PLAID.
  
-<img src="https://i.gyazo.com/a2321c05d72d89eb1745b7724f20322a.gif" width=750>
+<img src="https://i.gyazo.com/3639ca1403cacd2f46dad5694de5c7fb.gif" width=750>
