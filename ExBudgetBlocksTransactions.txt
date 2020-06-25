@@ -1,0 +1,343 @@
+{
+  "transactions": [
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 1500,
+      "category": [
+        "Payment",
+        "Rent"
+      ],
+      "date": "2020-05-01",
+      "name": "Rent *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 1000,
+      "category": [
+        "Community",
+        "Education"
+      ],
+      "date": "2020-05-01",
+      "name": "Education *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 50,
+      "category": [
+        "Service",
+        "Petroleum"
+      ],
+      "date": "2020-05-01",
+      "name": "Petroleum *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Shops",
+        "Supermarkets and Groceries"
+      ],
+      "date": "2020-05-01",
+      "name": "Supermarkets and Groceries *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Service",
+        "Rail"
+      ],
+      "date": "2020-05-02",
+      "name": "Rail *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Service",
+        "Utilities",
+	"Water"
+      ],
+      "date": "2020-05-02",
+      "name": "Water *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Service",
+        "Utilities",
+	"Heating, and Air Conditioning"
+      ],
+      "date": "2020-05-03",
+      "name": "Heating, and Air Conditioning *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 50,
+      "category": [
+        "Food and Drink",
+        "Bar"
+      ],
+      "date": "2020-05-03",
+      "name": "Bar *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Service",
+        "Utilities",
+	"Gas"
+      ],
+      "date": "2020-05-04",
+      "name": "Gas *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 50,
+      "category": [
+        "Service",
+        "Petroleum"
+      ],
+      "date": "2020-05-04",
+      "name": "Petroleum *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Service",
+        "Utilities",
+	"Electric"
+      ],
+      "date": "2020-05-05",
+      "name": "Electric *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Shops",
+        "Supermarkets and Groceries"
+      ],
+      "date": "2020-05-05",
+      "name": "Supermarkets and Groceries *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": -8300,
+      "category": [
+        "Transfer",
+        "Deposit",
+	"Check"
+      ],
+      "date": "2020-05-06",
+      "name": "Check *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Community",
+        "Religious",
+	"Churches"
+      ],
+      "date": "2020-05-07",
+      "name": "Churches *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 150,
+      "category": [
+        "Food and Drink",
+        "Nightlife",
+	"Night Clubs"
+      ],
+      "date": "2020-05-07",
+      "name": "Nigh Clubs *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 50,
+      "category": [
+        "Service",
+        "Petroleum"
+      ],
+      "date": "2020-05-07",
+      "name": "Petroleum *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 300,
+      "category": [
+        "Healthcare",
+        "Healthcare Services"
+      ],
+      "date": "2020-05-07",
+      "name": "Healthcare Services *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 500,
+      "category": [
+        "Payment",
+        "Loan"
+      ],
+      "date": "2020-05-08",
+      "name": "Loan *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Food and Drink",
+        "Restaurants"
+      ],
+      "date": "2020-05-08",
+      "name": "Restaurants *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Transfer",
+        "Internal Account Transfer"
+      ],
+      "date": "2020-05-09",
+      "name": "Internal Account Transfer *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Shops",
+        "Supermarkets and Groceries"
+      ],
+      "date": "2020-05-10",
+      "name": "Supermarkets and Groceries *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 50,
+      "category": [
+        "Service",
+        "Petroleum"
+      ],
+      "date": "2020-05-10",
+      "name": "Petroleum *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 50,
+      "category": [
+        "Service",
+        "Petroleum"
+      ],
+      "date": "2020-05-13",
+      "name": "Petroleum *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Shops",
+        "Supermarkets and Groceries"
+      ],
+      "date": "2020-05-15",
+      "name": "Supermarkets and Groceries *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 50,
+      "category": [
+        "Service",
+        "Petroleum"
+      ],
+      "date": "2020-05-16",
+      "name": "Petroleum *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 50,
+      "category": [
+        "Service",
+        "Petroleum"
+      ],
+      "date": "2020-05-19",
+      "name": "Petroleum *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Shops",
+        "Supermarkets and Groceries"
+      ],
+      "date": "2020-05-20",
+      "name": "Supermarkets and Groceries *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 50,
+      "category": [
+        "Service",
+        "Petroleum"
+      ],
+      "date": "2020-05-22",
+      "name": "Petroleum *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Shops",
+        "Supermarkets and Groceries"
+      ],
+      "date": "2020-05-25",
+      "name": "Supermarkets and Groceries *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Food and Drink",
+        "Restaurants"
+      ],
+      "date": "2020-05-26",
+      "name": "Restaurants *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 50,
+      "category": [
+        "Service",
+        "Petroleum"
+      ],
+      "date": "2020-05-26",
+      "name": "Petroleum *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 50,
+      "category": [
+        "Service",
+        "Petroleum"
+      ],
+      "date": "2020-05-29",
+      "name": "Petroleum *//"
+    },
+    {
+      "account_id": "k9VvjL1Eq3Cnk8gaQXDXt3aRVe7DaGiWekXgz",
+      "amount": 100,
+      "category": [
+        "Service",
+        "Automotive",
+	"Maintenance and Repair"
+      ],
+      "date": "2020-05-29",
+      "name": "Maintenance and Repair *//"
+    }
+  ],
+  "user_id": 1
+}
