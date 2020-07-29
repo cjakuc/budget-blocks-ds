@@ -10,7 +10,7 @@
 
 | Adriann Lefebvere | Chris Jakuc |
 |:--:|:--:|
-| <img src="https://media-exp1.licdn.com/dms/image/C5603AQHnWP2pLXNElA/profile-displayphoto-shrink_200_200/0?e=1597881600&v=beta&t=4mkgFZn0Ny3TO2vC6IA0atRSJNjrhA1OstP0kSkDdtc" width=200> | <img src="https://media-exp1.licdn.com/dms/image/C5603AQF1rn6d_fEWRQ/profile-displayphoto-shrink_200_200/0?e=1597881600&v=beta&t=5_hQV3iFj87RiQZzLMr76c7G63yL8O4PI29KeBsgbqw" width=200> |
+| <img src="https://media-exp1.licdn.com/dms/image/C5603AQHnWP2pLXNElA/profile-displayphoto-shrink_200_200/0?e=1597881600&v=beta&t=4mkgFZn0Ny3TO2vC6IA0atRSJNjrhA1OstP0kSkDdtc" width=200> | <img src="https://avatars2.githubusercontent.com/u/31317207?s=400&u=e1dbc7ebd9ba13b888a6f752714c0d02e967c0a7&v=4" width=200> |
 | [<img src="https://image.flaticon.com/icons/svg/25/25231.svg" width=25>](https://github.com/aklefebvere) [<img src = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.shareicon.net%2Fdata%2F2017%2F06%2F30%2F888065_logo_512x512.png&f=1&nofb=1" width=27>](https://www.linkedin.com/in/adriann-lefebvere-6571761a3/) | [<img src="https://image.flaticon.com/icons/svg/25/25231.svg" width=25>](https://github.com/cjakuc) [<img src = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.shareicon.net%2Fdata%2F2017%2F06%2F30%2F888065_logo_512x512.png&f=1&nofb=1" width=27>](https://www.linkedin.com/in/chrisjakuc/) |
 
 The entirety of this repository was built in a collaborative effort between the contributors using VS Code's LiveShare extension.
